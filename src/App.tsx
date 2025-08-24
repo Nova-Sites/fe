@@ -1,14 +1,75 @@
-import './App.css'
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Loading } from '@/components/common';
+import { ErrorBoundary, RouteGuard } from '@/middlewares';
+import { AuthProvider } from '@/contexts/AuthContext';
+import {
+  publicRoutes,
+  authRoutes,
+  userRoutes,
+  adminRoutes,
+} from '@/routes';
+import { RouteObject } from 'react-router-dom';
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <>
-      <h1 className="text-4xl font-bold underline text-red-500">
-        Hello world!
-      </h1>
-    </>
-  )
-}
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              {/* Public Routes */}
+              {publicRoutes.map((route: RouteObject) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              ))}
 
-export default App
+              {/* Auth Routes */}
+              {authRoutes.map((route: RouteObject) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              ))}
+
+              {/* Protected User Routes */}
+              {userRoutes.map((route: RouteObject) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <RouteGuard>
+                      {route.element}
+                    </RouteGuard>
+                  }
+                />
+              ))}
+
+              {/* Protected Admin Routes */}
+              {adminRoutes.map((route: RouteObject) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <RouteGuard>
+                      {route.element}
+                    </RouteGuard>
+                  }
+                />
+              ))}
+
+              {/* Catch all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
+  );
+};
+
+export default App;
