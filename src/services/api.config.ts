@@ -1,0 +1,247 @@
+import { fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { API_CONFIG } from '@/constants';
+
+// Custom error response type
+export interface ApiErrorResponse {
+  status: number;
+  data: {
+    success: false;
+    message: string;
+    errors?: Record<string, string[]>;
+  };
+}
+
+// Content type options
+export type ContentType = 'json' | 'form-data';
+
+// Base query configuration
+const baseQuery = fetchBaseQuery({
+  baseUrl: API_CONFIG.BASE_URL,
+  credentials: 'include', // Important for cookies (backend sẽ tự động gửi)
+  prepareHeaders: (headers) => {
+    // Backend set cookies với httpOnly: true, frontend không thể đọc được
+    // Chỉ có thể sử dụng token từ localStorage/sessionStorage
+    const accessToken = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    
+    if (accessToken) {
+      console.log('✅ Setting Authorization header with token from storage:', accessToken.substring(0, 20) + '...');
+      headers.set('Authorization', `Bearer ${accessToken}`);
+    } else {
+      console.log('❌ No access_token found in storage');
+    }
+    
+    console.log('📤 Final headers:', Object.fromEntries(headers.entries()));
+    return headers;
+  },
+});
+
+// Enhanced base query with error handling, content-type support, and refresh token logic
+export const createBaseQuery = (): BaseQueryFn<
+  FetchArgs & { contentType?: ContentType },
+  unknown,
+  FetchBaseQueryError
+> => {
+  return async (args, api, extraOptions) => {
+    const { contentType = 'json', ...fetchArgs } = args;
+    
+    // Set content type header
+    if (contentType === 'form-data') {
+      // For form-data, don't set Content-Type header (browser will set it automatically)
+      // Remove any existing Content-Type header
+      if (fetchArgs.headers) {
+        try {
+          const headers = new Headers(fetchArgs.headers as HeadersInit);
+          headers.delete('Content-Type');
+          fetchArgs.headers = headers;
+        } catch {
+          // If Headers constructor fails, create new headers object
+          const newHeaders: Record<string, string> = {};
+          if (typeof fetchArgs.headers === 'object' && fetchArgs.headers !== null) {
+            Object.entries(fetchArgs.headers).forEach(([key, value]) => {
+              if (key !== 'Content-Type' && value !== undefined) {
+                newHeaders[key] = String(value);
+              }
+            });
+          }
+          fetchArgs.headers = newHeaders;
+        }
+      }
+    } else {
+      // For JSON, ensure Content-Type is set
+      if (fetchArgs.headers) {
+        try {
+          const headers = new Headers(fetchArgs.headers as HeadersInit);
+          headers.set('Content-Type', 'application/json');
+          fetchArgs.headers = headers;
+        } catch {
+          // If Headers constructor fails, create new headers object
+          const newHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
+          if (typeof fetchArgs.headers === 'object' && fetchArgs.headers !== null) {
+            Object.entries(fetchArgs.headers).forEach(([key, value]) => {
+              if (value !== undefined) {
+                newHeaders[key] = String(value);
+              }
+            });
+          }
+          fetchArgs.headers = newHeaders;
+        }
+      } else {
+        fetchArgs.headers = { 'Content-Type': 'application/json' };
+      }
+    }
+
+    // Execute the base query
+    let result = await baseQuery(fetchArgs, api, extraOptions);
+
+    // Handle 401 errors (unauthorized) with refresh token logic
+    if (result.error && result.error.status === 401) {
+      const url = String(fetchArgs.url);
+      
+      // Don't try refresh for auth-related endpoints to prevent infinite loops
+      if (!url.includes('/auth/login') && !url.includes('/auth/register') && !url.includes('/auth/refresh-token')) {
+        
+        // Try to refresh token
+        try {
+          console.log('Attempting to refresh token...');
+          
+          // Call refresh token endpoint - cookies sẽ được gửi tự động
+          const refreshResult = await baseQuery({
+            url: '/auth/refresh-token',
+            method: 'POST',
+            credentials: 'include',
+          }, api, extraOptions);
+          
+          if (refreshResult.data) {
+            console.log('Token refreshed successfully, retrying original request...');
+            
+            // Cập nhật token trong storage nếu refresh thành công
+            const newTokens = (refreshResult.data as any)?.data?.tokens;
+            if (newTokens?.accessToken) {
+              localStorage.setItem('access_token', newTokens.accessToken);
+              console.log('🔄 Updated access token in storage after refresh');
+            }
+            
+            // Retry the original request with new token
+            result = await baseQuery(fetchArgs, api, extraOptions);
+            
+            // If still 401 after refresh, then logout
+            if (result.error && result.error.status === 401) {
+              console.log('Still unauthorized after token refresh, logging out...');
+              await handleLogout();
+            }
+          } else {
+            console.log('Token refresh failed, logging out...');
+            await handleLogout();
+          }
+        } catch (refreshError) {
+          console.error('Error during token refresh:', refreshError);
+          await handleLogout();
+        }
+      } else if (url.includes('/users/profile')) {
+        // For profile endpoint, just clear auth state without reload
+        console.log('Profile endpoint returned 401, clearing auth state...');
+        // Không gọi clearAuthState() để tránh reload
+        // Chỉ dispatch clearAuth action thông qua Redux
+        // Điều này sẽ được xử lý trong AuthContext
+        // Không làm gì cả - để AuthContext tự xử lý
+      }
+    }
+
+    // Handle other errors
+    if (result.error) {
+      const error = result.error as ApiErrorResponse;
+      
+      // Log error for debugging
+      console.error('API Error:', {
+        status: error.status,
+        message: error.data?.message || 'Unknown error occurred',
+        errors: error.data?.errors,
+        url: fetchArgs.url,
+        method: fetchArgs.method,
+      });
+
+      // Enhance error message for user
+      if (error.data?.errors && Object.keys(error.data.errors).length > 0) {
+        // Format validation errors
+        const validationMessages = Object.entries(error.data.errors)
+          .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+          .join('; ');
+        
+        error.data.message = `Validation failed: ${validationMessages}`;
+      }
+    }
+
+    return result;
+  };
+};
+
+// Helper function to handle logout
+const handleLogout = async () => {
+  try {
+    // Clear token from storage
+    localStorage.removeItem('access_token');
+    sessionStorage.removeItem('access_token');
+    console.log('🗑️ Tokens cleared from storage');
+    
+    // Call logout endpoint to clear cookies
+    await fetch(`${API_CONFIG.BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (error) {
+    console.error('Error during logout:', error);
+  } finally {
+    // Redirect to login without reload
+    // window.location.href = '/login';
+  }
+};
+
+// Helper function to create form data from object
+export const createFormData = (data: Record<string, unknown>): FormData => {
+  const formData = new FormData();
+  
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      if (value instanceof File) {
+        formData.append(key, value);
+      } else if (Array.isArray(value)) {
+        value.forEach((item, index) => {
+          if (item instanceof File) {
+            formData.append(`${key}[${index}]`, item);
+          } else {
+            formData.append(key, String(item));
+          }
+        });
+      } else {
+        formData.append(key, String(value));
+      }
+    }
+  });
+  
+  return formData;
+};
+
+// Helper function to check if response is successful
+export const isSuccessfulResponse = (response: unknown): boolean => {
+  return (response as { data?: { success?: boolean } })?.data?.success === true;
+};
+
+// Helper function to extract data from response
+export const extractData = <T>(response: unknown): T | null => {
+  if (isSuccessfulResponse(response)) {
+    return (response as { data: { data: T } }).data.data;
+  }
+  return null;
+};
+
+// Helper function to extract error message
+export const extractErrorMessage = (response: unknown): string => {
+  const errorResponse = response as { error?: { data?: { message?: string }; message?: string } };
+  if (errorResponse?.error?.data?.message) {
+    return errorResponse.error.data.message;
+  }
+  if (errorResponse?.error?.message) {
+    return errorResponse.error.message;
+  }
+  return 'An unexpected error occurred';
+};
