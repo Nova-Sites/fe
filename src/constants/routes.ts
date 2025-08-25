@@ -10,16 +10,6 @@ export const API_ROUTES = {
     RESEND_OTP: '/auth/resend-otp',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
-    METHODS: {
-      LOGIN: 'POST',
-      REGISTER: 'POST',
-      LOGOUT: 'POST',
-      REFRESH_TOKEN: 'POST',
-      VERIFY_OTP: 'POST',
-      RESEND_OTP: 'POST',
-      FORGOT_PASSWORD: 'POST',
-      RESET_PASSWORD: 'POST',
-    },
   },
 
   // User Routes
@@ -33,16 +23,6 @@ export const API_ROUTES = {
     GET_BY_ID: '/users/:id',
     DELETE: '/users/:id',
     SOFT_DELETE: '/users/:id/soft-delete',
-    METHODS: {
-      GET_ALL: 'GET',
-      GET_BY_ID: 'GET',
-      GET_PROFILE: 'GET', // Thêm method cho profile
-      UPDATE_PROFILE: 'PUT',
-      UPDATE_AVATAR: 'PUT',
-      CHANGE_PASSWORD: 'PUT',
-      DELETE: 'DELETE',
-      SOFT_DELETE: 'DELETE',
-    },
   },
 
   // Category Routes
@@ -57,17 +37,6 @@ export const API_ROUTES = {
     UPDATE: '/categories/:id',
     DELETE: '/categories/:id',
     SOFT_DELETE: '/categories/:id/soft-delete',
-    METHODS: {
-      GET_ALL: 'GET',
-      GET_BY_ID: 'GET',
-      GET_BY_SLUG: 'GET',
-      SEARCH: 'GET',
-      WITH_PRODUCT_COUNT: 'GET',
-      CREATE: 'POST',
-      UPDATE: 'PUT',
-      DELETE: 'DELETE',
-      SOFT_DELETE: 'DELETE',
-    },
   },
 
   // Product Routes
@@ -84,19 +53,6 @@ export const API_ROUTES = {
     UPDATE: '/products/:id',
     DELETE: '/products/:id',
     SOFT_DELETE: '/products/:id/soft-delete',
-    METHODS: {
-      GET_ALL: 'GET',
-      GET_BY_ID: 'GET',
-      GET_BY_SLUG: 'GET',
-      POPULAR: 'GET',
-      SEARCH: 'GET',
-      BY_CATEGORY: 'GET',
-      BY_PRICE_RANGE: 'GET',
-      CREATE: 'POST',
-      UPDATE: 'PUT',
-      DELETE: 'DELETE',
-      SOFT_DELETE: 'DELETE',
-    },
   },
 
   // Upload Routes
@@ -107,17 +63,17 @@ export const API_ROUTES = {
     AVATAR: '/upload/avatar',
     PRODUCT_IMAGE: '/upload/product-image',
     PRODUCT_IMAGES: '/upload/product-images',
-    METHODS: {
-      SINGLE_IMAGE: 'POST',
-      MULTIPLE_IMAGES: 'POST',
-      AVATAR: 'POST',
-      PRODUCT_IMAGE: 'POST',
-      PRODUCT_IMAGES: 'POST',
-    },
   },
 
   // Health Check
   HEALTH: '/health',
+} as const;
+
+export const API_METHODS = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
 } as const;
 
 // Frontend Route Paths
@@ -133,6 +89,8 @@ export const FRONTEND_ROUTES = {
     CATEGORY_DETAIL: '/categories/:slug',
     ABOUT: '/about',
     CONTACT: '/contact',
+    FORBIDDEN: '/403',
+    NOT_FOUND: '/404',
   },
 
   // Protected Routes
@@ -159,6 +117,7 @@ export const FRONTEND_ROUTES = {
 export const ROUTE_GUARDS = {
   PUBLIC: 'public',
   PROTECTED: 'protected',
+  AUTH: 'auth',
   ADMIN: 'admin',
   SUPER_ADMIN: 'super_admin',
 } as const;

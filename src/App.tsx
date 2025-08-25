@@ -62,8 +62,8 @@ const App: React.FC = () => {
                 />
               ))}
 
-              {/* Catch all route */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* Catch all route -> 404 */}
+              <Route path="*" element={<Navigate to="/404" replace />} />
             </Routes>
           </Suspense>
         </Router>

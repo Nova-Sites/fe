@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import type { ApiResponse, User } from '@/types';
-import { API_ROUTES } from '@/constants';
+import { API_ROUTES, API_METHODS } from '@/constants';
 import { createBaseQuery } from './api.config';
 
 export const userApi = createApi({
@@ -11,7 +11,7 @@ export const userApi = createApi({
     getUsers: builder.query<ApiResponse<User[]>, void>({
       query: () => ({
         url: API_ROUTES.USERS.GET_ALL,
-        method: API_ROUTES.USERS.METHODS.GET_ALL,
+        method: API_METHODS.GET,
         contentType: 'json',
       }),
       providesTags: ['User'],
@@ -19,7 +19,7 @@ export const userApi = createApi({
     updateUser: builder.mutation<ApiResponse<User>, { id: number; data: Partial<User> }>({
       query: ({ id, data }) => ({
         url: `${API_ROUTES.USERS.UPDATE_PROFILE}/${id}`,
-        method: API_ROUTES.USERS.METHODS.UPDATE_PROFILE,
+        method: API_METHODS.PUT,
         body: data,
         contentType: 'json',
       }),
@@ -28,7 +28,7 @@ export const userApi = createApi({
     deleteUser: builder.mutation<ApiResponse<null>, number>({
       query: (id) => ({
         url: `${API_ROUTES.USERS.DELETE}/${id}`,
-        method: API_ROUTES.USERS.METHODS.DELETE,
+        method: API_METHODS.DELETE,
         contentType: 'json',
       }),
       invalidatesTags: ['User'],

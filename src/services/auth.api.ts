@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import type { ApiResponse, LoginCredentials, RegisterData, User } from '@/types';
-import { API_ROUTES } from '@/constants';
+import { API_ROUTES, API_METHODS } from '@/constants';
 import { createBaseQuery } from './api.config';
 
 export const authApi = createApi({
@@ -11,7 +11,7 @@ export const authApi = createApi({
     login: builder.mutation<ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string; expiresIn: number } }>, LoginCredentials>({
       query: (credentials) => ({
         url: API_ROUTES.AUTH.LOGIN,
-        method: API_ROUTES.AUTH.METHODS.LOGIN,
+        method: API_METHODS.POST,
         body: credentials,
         contentType: 'json',
       }),
@@ -20,7 +20,7 @@ export const authApi = createApi({
     register: builder.mutation<ApiResponse<{ user: User }>, RegisterData>({
       query: (data) => ({
         url: API_ROUTES.AUTH.REGISTER,
-        method: API_ROUTES.AUTH.METHODS.REGISTER,
+        method: API_METHODS.POST,
         body: data,
         contentType: 'json',
       }),
@@ -29,7 +29,7 @@ export const authApi = createApi({
     logout: builder.mutation<ApiResponse<null>, void>({
       query: () => ({
         url: API_ROUTES.AUTH.LOGOUT,
-        method: API_ROUTES.AUTH.METHODS.LOGOUT,
+        method: API_METHODS.POST,
         contentType: 'json',
       }),
       invalidatesTags: ['Auth'],
@@ -37,7 +37,7 @@ export const authApi = createApi({
     getProfile: builder.query<ApiResponse<User>, void>({
       query: () => ({
         url: API_ROUTES.USERS.PROFILE, // Sử dụng USERS.PROFILE đúng với backend
-        method: API_ROUTES.USERS.METHODS.GET_PROFILE,
+        method: API_METHODS.GET,
         contentType: 'json',
       }),
       providesTags: ['Auth'],
@@ -45,7 +45,7 @@ export const authApi = createApi({
     refreshToken: builder.mutation<ApiResponse<{ user: User; tokens: { accessToken: string; refreshToken: string; expiresIn: number } }>, void>({
       query: () => ({
         url: API_ROUTES.AUTH.REFRESH_TOKEN,
-        method: API_ROUTES.AUTH.METHODS.REFRESH_TOKEN,
+        method: API_METHODS.POST,
         contentType: 'json',
       }),
       invalidatesTags: ['Auth'],

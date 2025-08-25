@@ -36,21 +36,6 @@ export const PAGINATION = {
   PAGE_SIZE_OPTIONS: [12, 24, 48, 96],
 } as const;
 
-// Routes
-export const ROUTES = {
-  HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  PROFILE: '/profile',
-  PRODUCTS: '/products',
-  CATEGORIES: '/categories',
-  ADMIN: '/admin',
-  ADMIN_DASHBOARD: '/admin/dashboard',
-  ADMIN_USERS: '/admin/users',
-  ADMIN_PRODUCTS: '/admin/products',
-  ADMIN_CATEGORIES: '/admin/categories',
-} as const;
-
 // Local Storage Keys
 export const STORAGE_KEYS = {
   TOKEN: 'token',

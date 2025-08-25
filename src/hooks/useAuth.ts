@@ -4,6 +4,7 @@ import { RootState } from '@/store';
 import { setUser, setToken, clearAuth, setError, clearError, setLoading, setAuthenticated } from '@/store/slices/authSlice';
 import { useLoginMutation, useRegisterMutation, useLogoutMutation, useGetProfileQuery } from '@/services/auth.api';
 import type { LoginCredentials, RegisterData } from '@/types';
+import { USER_ROLES } from '@/constants';
 
 interface ApiError {
   data?: {
@@ -147,8 +148,8 @@ export const useAuth = () => {
   }, []);
 
   // Computed values
-  const isAdmin = user?.role === 'ROLE_ADMIN' || user?.role === 'ROLE_SUPER_ADMIN';
-  const isSuperAdmin = user?.role === 'ROLE_SUPER_ADMIN';
+  const isAdmin = user?.role === USER_ROLES.ADMIN || user?.role === USER_ROLES.SUPER_ADMIN;
+  const isSuperAdmin = user?.role === USER_ROLES.SUPER_ADMIN;
 
   return {
     // State

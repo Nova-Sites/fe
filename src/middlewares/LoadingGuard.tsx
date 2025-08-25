@@ -1,13 +1,6 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Loading } from '@/components/common';
-
-interface LoadingGuardProps {
-  children: ReactNode;
-  isLoading: boolean;
-  fallback?: ReactNode;
-  minLoadingTime?: number;
-  showLoadingOnMount?: boolean;
-}
+import { LoadingGuardProps } from '@/types';
 
 export const LoadingGuard: React.FC<LoadingGuardProps> = ({
   children,

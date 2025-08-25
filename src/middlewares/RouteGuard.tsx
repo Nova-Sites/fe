@@ -20,7 +20,6 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
 }) => {
   const location = useLocation();
   const { user, isAuthenticated, isLoading } = useAuthContext();
-  
   // Use provided routePath or current location
   const currentPath = routePath || location.pathname;
   

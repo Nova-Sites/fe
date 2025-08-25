@@ -1,99 +1,78 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-
-// Route configuration interface
-export interface RouteConfig {
-  path: string;
-  type: 'public' | 'auth' | 'user' | 'admin';
-  requireAuth: boolean;
-  requiredRoles?: string[];
-  redirectTo?: string;
-}
-
-// Route access context
-export interface RouteAccessContext {
-  isAuthenticated: boolean;
-  user?: any;
-  currentPath: string;
-}
-
-// Route access result
-export interface RouteAccessResult {
-  hasAccess: boolean;
-  redirectComponent?: React.ReactElement;
-  reason?: string;
-}
+import { USER_ROLES, ROUTE_GUARDS, FRONTEND_ROUTES } from '@/constants';
+import { RouteConfig, RouteAccessContext, RouteAccessResult } from '@/types';
 
 // Route configuration mapping
 const routeConfigs: Record<string, RouteConfig> = {
   // Public routes
-  '/': {
-    path: '/',
-    type: 'public',
+  [FRONTEND_ROUTES.PUBLIC.HOME]: {
+    path: FRONTEND_ROUTES.PUBLIC.HOME,
+    type: ROUTE_GUARDS.PUBLIC,
     requireAuth: false
   },
-  '/login': {
-    path: '/login',
-    type: 'auth',
+  [FRONTEND_ROUTES.PUBLIC.LOGIN]: {
+    path: FRONTEND_ROUTES.PUBLIC.LOGIN,
+    type: ROUTE_GUARDS.AUTH,
     requireAuth: false
   },
-  '/register': {
-    path: '/register',
-    type: 'auth',
+  [FRONTEND_ROUTES.PUBLIC.REGISTER]: {
+    path: FRONTEND_ROUTES.PUBLIC.REGISTER,
+    type: ROUTE_GUARDS.AUTH,
     requireAuth: false
   },
-  '/products': {
-    path: '/products',
-    type: 'public',
+  [FRONTEND_ROUTES.PUBLIC.PRODUCTS]: {
+    path: FRONTEND_ROUTES.PUBLIC.PRODUCTS,
+    type: ROUTE_GUARDS.PUBLIC,
     requireAuth: false
   },
-  '/products/:slug': {
-    path: '/products/:slug',
-    type: 'public',
+  [FRONTEND_ROUTES.PUBLIC.PRODUCT_DETAIL]: {
+    path: FRONTEND_ROUTES.PUBLIC.PRODUCT_DETAIL,
+    type: ROUTE_GUARDS.PUBLIC,
     requireAuth: false
   },
-  '/categories': {
-    path: '/categories',
-    type: 'public',
+  [FRONTEND_ROUTES.PUBLIC.CATEGORIES]: {
+    path: FRONTEND_ROUTES.PUBLIC.CATEGORIES,
+    type: ROUTE_GUARDS.PUBLIC,
     requireAuth: false
   },
 
   // User routes
-  '/profile': {
-    path: '/profile',
-    type: 'user',
+  [FRONTEND_ROUTES.PROTECTED.PROFILE]: {
+    path: FRONTEND_ROUTES.PROTECTED.PROFILE,
+    type: ROUTE_GUARDS.PROTECTED,
     requireAuth: true,
-    redirectTo: '/login'
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
   },
 
   // Admin routes
-  '/admin': {
-    path: '/admin',
-    type: 'admin',
+  [FRONTEND_ROUTES.ADMIN.DASHBOARD]: {
+    path: FRONTEND_ROUTES.ADMIN.DASHBOARD,
+    type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
-    requiredRoles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
-    redirectTo: '/login'
+    requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
   },
-  '/admin/users': {
-    path: '/admin/users',
-    type: 'admin',
+  [FRONTEND_ROUTES.ADMIN.USERS]: {
+    path: FRONTEND_ROUTES.ADMIN.USERS,
+    type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
-    requiredRoles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
-    redirectTo: '/login'
+    requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
   },
-  '/admin/products': {
-    path: '/admin/products',
-    type: 'admin',
+  [FRONTEND_ROUTES.ADMIN.PRODUCTS]: {
+    path: FRONTEND_ROUTES.ADMIN.PRODUCTS,
+    type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
-    requiredRoles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
-    redirectTo: '/login'
+    requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
   },
-  '/admin/categories': {
-    path: '/admin/categories',
-    type: 'admin',
+  [FRONTEND_ROUTES.ADMIN.CATEGORIES]: {
+    path: FRONTEND_ROUTES.ADMIN.CATEGORIES,
+    type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
-    requiredRoles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
-    redirectTo: '/login'
+    requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
   }
 };
 
@@ -153,11 +132,11 @@ export const checkRouteAccess = (
   // Check role requirements
   if (routeConfig.requiredRoles && user) {
     const hasRequiredRole = routeConfig.requiredRoles.some(role => {
-      if (role === 'ROLE_ADMIN') {
-        return user.role === 'ROLE_ADMIN' || user.role === 'ROLE_SUPER_ADMIN';
+      if (role === USER_ROLES.ADMIN) {
+        return user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.SUPER_ADMIN;
       }
-      if (role === 'ROLE_SUPER_ADMIN') {
-        return user.role === 'ROLE_SUPER_ADMIN';
+      if (role === USER_ROLES.SUPER_ADMIN) {
+        return user.role === USER_ROLES.SUPER_ADMIN;
       }
       return user.role === role;
     });

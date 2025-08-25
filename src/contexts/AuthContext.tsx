@@ -87,7 +87,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value: AuthContextType = {
     user,
     isAuthenticated,
-    isLoading: isProfileLoading,
+    // Keep loading true until we have definitively attempted profile fetch
+    // and resolved the auth state. This avoids guard redirects during init.
+    isLoading: user ? false : (isProfileLoading || !hasAttemptedProfileFetch.current),
   };
 
   return (

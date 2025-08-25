@@ -24,13 +24,8 @@ const baseQuery = fetchBaseQuery({
     const accessToken = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
     
     if (accessToken) {
-      console.log('✅ Setting Authorization header with token from storage:', accessToken.substring(0, 20) + '...');
       headers.set('Authorization', `Bearer ${accessToken}`);
-    } else {
-      console.log('❌ No access_token found in storage');
     }
-    
-    console.log('📤 Final headers:', Object.fromEntries(headers.entries()));
     return headers;
   },
 });
