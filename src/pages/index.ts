@@ -11,3 +11,7 @@ export { default as ProfilePage } from './Profile/ProfilePage';
 
 // Admin Pages
 export { default as AdminDashboard } from './Admin/AdminDashboard';
+
+// Error Pages
+export { default as ForbiddenPage } from './ForbiddenPage';
+export { default as NotFoundPage } from './NotFoundPage';

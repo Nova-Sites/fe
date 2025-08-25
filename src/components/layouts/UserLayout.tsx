@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Button } from '@/components/common';
+import { USER_ROLES } from '@/constants';
 
 interface UserLayoutProps {
   children: React.ReactNode;
@@ -50,7 +51,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
                   <Link to="/profile" className="text-gray-700 hover:text-blue-600">
                     Profile
                   </Link>
-                  {user?.role === 'ROLE_ADMIN' || user?.role === 'ROLE_SUPER_ADMIN' ? (
+                  {user?.role === USER_ROLES.ADMIN || user?.role === USER_ROLES.SUPER_ADMIN ? (
                     <Link to="/admin" className="text-gray-700 hover:text-blue-600">
                       Admin
                     </Link>

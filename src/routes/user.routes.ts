@@ -1,6 +1,7 @@
 import React from 'react';
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
+import { FRONTEND_ROUTES } from '@/constants';
 
 // Lazy load user components
 const ProfilePage = lazy(() => import('@/pages/Profile/ProfilePage'));
@@ -11,19 +12,19 @@ const CategoriesPage = lazy(() => import('@/pages/Categories/CategoriesPage'));
 // User route configurations
 export const userRoutes: RouteObject[] = [
   {
-    path: '/profile',
+    path: FRONTEND_ROUTES.PROTECTED.PROFILE,
     element: React.createElement(ProfilePage),
   },
   {
-    path: '/products',
+    path: FRONTEND_ROUTES.PUBLIC.PRODUCTS,
     element: React.createElement(ProductsPage),
   },
   {
-    path: '/products/:slug',
+    path: FRONTEND_ROUTES.PUBLIC.PRODUCT_DETAIL,
     element: React.createElement(ProductDetailPage),
   },
   {
-    path: '/categories',
+    path: FRONTEND_ROUTES.PUBLIC.CATEGORIES,
     element: React.createElement(CategoriesPage),
   },
 ];

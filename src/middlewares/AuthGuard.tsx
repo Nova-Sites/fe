@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Loading } from '@/components/common';
+import { FRONTEND_ROUTES } from '@/constants';
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -11,7 +12,7 @@ interface AuthGuardProps {
 
 export const AuthGuard: React.FC<AuthGuardProps> = ({
   children,
-  redirectTo = '/login',
+  redirectTo = FRONTEND_ROUTES.PUBLIC.LOGIN,
   fallback
 }) => {
   const { isAuthenticated, isLoading } = useAuthContext();

@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import type { ApiResponse, Product, ProductFilters, PaginatedResponse } from '@/types';
-import { API_ROUTES } from '@/constants';
+import { API_ROUTES, API_METHODS } from '@/constants';
 import { createBaseQuery } from './api.config';
 
 export const productApi = createApi({
@@ -11,7 +11,7 @@ export const productApi = createApi({
     getProducts: builder.query<PaginatedResponse<Product>, ProductFilters>({
       query: (filters) => ({
         url: API_ROUTES.PRODUCTS.GET_ALL,
-        method: API_ROUTES.PRODUCTS.METHODS.GET_ALL,
+        method: API_METHODS.GET,
         params: filters,
         contentType: 'json',
       }),
@@ -20,7 +20,7 @@ export const productApi = createApi({
     getProductBySlug: builder.query<ApiResponse<Product>, string>({
       query: (slug) => ({
         url: `${API_ROUTES.PRODUCTS.GET_BY_SLUG}/${slug}`,
-        method: API_ROUTES.PRODUCTS.METHODS.GET_BY_SLUG,
+        method: API_METHODS.GET,
         contentType: 'json',
       }),
       providesTags: (_result, _error, slug) => [{ type: 'Product', id: slug }],
@@ -28,7 +28,7 @@ export const productApi = createApi({
     getPopularProducts: builder.query<ApiResponse<Product[]>, void>({
       query: () => ({
         url: API_ROUTES.PRODUCTS.POPULAR,
-        method: API_ROUTES.PRODUCTS.METHODS.POPULAR,
+        method: API_METHODS.GET,
         contentType: 'json',
       }),
       providesTags: ['Product'],
@@ -36,7 +36,7 @@ export const productApi = createApi({
     createProduct: builder.mutation<ApiResponse<Product>, Partial<Product>>({
       query: (data) => ({
         url: API_ROUTES.PRODUCTS.CREATE,
-        method: API_ROUTES.PRODUCTS.METHODS.CREATE,
+        method: API_METHODS.POST,
         body: data,
         contentType: 'json',
       }),
@@ -45,7 +45,7 @@ export const productApi = createApi({
     updateProduct: builder.mutation<ApiResponse<Product>, { id: number; data: Partial<Product> }>({
       query: ({ id, data }) => ({
         url: `${API_ROUTES.PRODUCTS.UPDATE}/${id}`,
-        method: API_ROUTES.PRODUCTS.METHODS.UPDATE,
+        method: API_METHODS.PUT,
         body: data,
         contentType: 'json',
       }),
@@ -54,7 +54,7 @@ export const productApi = createApi({
     deleteProduct: builder.mutation<ApiResponse<null>, number>({
       query: (id) => ({
         url: `${API_ROUTES.PRODUCTS.DELETE}/${id}`,
-        method: API_ROUTES.PRODUCTS.METHODS.DELETE,
+        method: API_METHODS.DELETE,
         contentType: 'json',
       }),
       invalidatesTags: ['Product'],

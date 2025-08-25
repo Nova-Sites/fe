@@ -1,3 +1,12 @@
+import { USER_ROLES, ROUTE_GUARDS } from "@/constants";
+import { ReactNode } from "react";
+
+// Derive literal union from USER_ROLES constant
+export type UserRole = typeof USER_ROLES[keyof typeof USER_ROLES];
+
+// Derive literal union from ROUTE_GUARDS constant
+export type RouteGuardType = typeof ROUTE_GUARDS[keyof typeof ROUTE_GUARDS];
+
 // User Types
 export interface User {
   id: number;
@@ -5,7 +14,7 @@ export interface User {
   email: string;
   isActive: boolean;
   image?: string;
-  role: 'ROLE_SUPER_ADMIN' | 'ROLE_ADMIN' | 'ROLE_USER';
+  role: UserRole;
   createdAt: string;
   updatedAt: string;
 }
@@ -15,7 +24,7 @@ export interface UserProfile {
   username: string;
   email: string;
   image?: string;
-  role: string;
+  role: UserRole;
 }
 
 // Category Types
@@ -77,12 +86,14 @@ export interface ApiResponse<T> {
 export interface PaginatedResponse<T> {
   success: boolean;
   message: string;
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
+  data: {
+    products: T[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
   };
 }
 
@@ -125,3 +136,42 @@ export interface FormField {
     message?: string;
   };
 }
+
+export interface LoadingGuardProps {
+  children: ReactNode;
+  isLoading: boolean;
+  fallback?: ReactNode;
+  minLoadingTime?: number;
+  showLoadingOnMount?: boolean;
+}
+
+export interface RoleGuardProps {
+  children: ReactNode;
+  requiredRoles: string[];
+  redirectTo?: string;
+  fallback?: ReactNode;
+}
+
+// Route configuration interface
+export interface RouteConfig {
+  path: string;
+  type: RouteGuardType;
+  requireAuth: boolean;
+  requiredRoles?: string[];
+  redirectTo?: string;
+}
+
+// Route access context
+export interface RouteAccessContext {
+  isAuthenticated: boolean;
+  user?: any;
+  currentPath: string;
+}
+
+// Route access result
+export interface RouteAccessResult {
+  hasAccess: boolean;
+  redirectComponent?: React.ReactElement;
+  reason?: string;
+}
+

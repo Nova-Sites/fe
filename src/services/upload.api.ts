@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import type { ApiResponse } from '@/types';
-import { API_ROUTES } from '@/constants';
+import { API_ROUTES, API_METHODS } from '@/constants';
 import { createBaseQuery, createFormData } from './api.config';
 
 export interface UploadResponse {
@@ -31,7 +31,7 @@ export const uploadApi = createApi({
 
         return {
           url: API_ROUTES.UPLOAD.SINGLE_IMAGE,
-          method: API_ROUTES.UPLOAD.METHODS.SINGLE_IMAGE,
+          method: API_METHODS.POST,
           body: formData,
           contentType: 'form-data',
         };
@@ -48,7 +48,7 @@ export const uploadApi = createApi({
 
         return {
           url: API_ROUTES.UPLOAD.MULTIPLE_IMAGES,
-          method: API_ROUTES.UPLOAD.METHODS.MULTIPLE_IMAGES,
+          method: API_METHODS.POST,
           body: formData,
           contentType: 'form-data',
         };
@@ -65,7 +65,7 @@ export const uploadApi = createApi({
 
         return {
           url: API_ROUTES.UPLOAD.AVATAR,
-          method: API_ROUTES.UPLOAD.METHODS.AVATAR,
+          method: API_METHODS.POST,
           body: formData,
           contentType: 'form-data',
         };
@@ -82,7 +82,7 @@ export const uploadApi = createApi({
 
         return {
           url: API_ROUTES.UPLOAD.PRODUCT_IMAGE,
-          method: API_ROUTES.UPLOAD.METHODS.PRODUCT_IMAGE,
+          method: API_METHODS.POST,
           body: formData,
           contentType: 'form-data',
         };

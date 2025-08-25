@@ -1,14 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Loading } from '@/components/common';
-
-interface RoleGuardProps {
-  children: ReactNode;
-  requiredRoles: string[];
-  redirectTo?: string;
-  fallback?: ReactNode;
-}
+import { RoleGuardProps } from '@/types';
 
 export const RoleGuard: React.FC<RoleGuardProps> = ({
   children,

@@ -11,12 +11,12 @@ const AdminDashboard: React.FC = () => {
   const { data: productsData, isLoading: productsLoading } = useGetProductsQuery({ page: 1, limit: 5 });
   const { data: categoriesData, isLoading: categoriesLoading } = useGetCategoriesQuery();
   const { data: usersData, isLoading: usersLoading } = useGetUsersQuery();
-
+  
   const isLoading = productsLoading || categoriesLoading || usersLoading;
 
   if (isLoading) return <Loading />;
 
-  const products = productsData?.data || [];
+  const products = productsData?.data?.products || [];
   const categories = categoriesData?.data || [];
   const users = usersData?.data || [];
 
@@ -46,7 +46,7 @@ const AdminDashboard: React.FC = () => {
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">Recent Products</h3>
             <div className="space-y-3">
-              {products.slice(0, 5).map((product) => (
+              {products.slice(0, 5).map((product: any) => (
                 <div key={product.id} className="flex justify-between items-center">
                   <span className="font-medium">{product.name}</span>
                   <span className="text-gray-600">${product.price}</span>

@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import type { ApiResponse, Category } from '@/types';
-import { API_ROUTES } from '@/constants';
+import { API_ROUTES, API_METHODS } from '@/constants';
 import { createBaseQuery } from './api.config';
 
 export const categoryApi = createApi({
@@ -11,7 +11,7 @@ export const categoryApi = createApi({
     getCategories: builder.query<ApiResponse<Category[]>, void>({
       query: () => ({
         url: API_ROUTES.CATEGORIES.GET_ALL,
-        method: API_ROUTES.CATEGORIES.METHODS.GET_ALL,
+        method: API_METHODS.GET,
         contentType: 'json',
       }),
       providesTags: ['Category'],
@@ -19,7 +19,7 @@ export const categoryApi = createApi({
     getCategoryBySlug: builder.query<ApiResponse<Category>, string>({
       query: (slug) => ({
         url: `${API_ROUTES.CATEGORIES.GET_BY_SLUG}/${slug}`,
-        method: API_ROUTES.CATEGORIES.METHODS.GET_BY_SLUG,
+        method: API_METHODS.GET,
         contentType: 'json',
       }),
       providesTags: (_result, _error, slug) => [{ type: 'Category', id: slug }],
@@ -27,7 +27,7 @@ export const categoryApi = createApi({
     createCategory: builder.mutation<ApiResponse<Category>, Partial<Category>>({
       query: (data) => ({
         url: API_ROUTES.CATEGORIES.CREATE,
-        method: API_ROUTES.CATEGORIES.METHODS.CREATE,
+        method: API_METHODS.POST,
         body: data,
         contentType: 'json',
       }),
@@ -36,7 +36,7 @@ export const categoryApi = createApi({
     updateCategory: builder.mutation<ApiResponse<Category>, { id: number; data: Partial<Category> }>({
       query: ({ id, data }) => ({
         url: `${API_ROUTES.CATEGORIES.UPDATE}/${id}`,
-        method: API_ROUTES.CATEGORIES.METHODS.UPDATE,
+        method: API_METHODS.PUT,
         body: data,
         contentType: 'json',
       }),
@@ -45,7 +45,7 @@ export const categoryApi = createApi({
     deleteCategory: builder.mutation<ApiResponse<null>, number>({
       query: (id) => ({
         url: `${API_ROUTES.CATEGORIES.DELETE}/${id}`,
-        method: API_ROUTES.CATEGORIES.METHODS.DELETE,
+        method: API_METHODS.DELETE,
         contentType: 'json',
       }),
       invalidatesTags: ['Category'],
