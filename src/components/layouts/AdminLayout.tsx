@@ -2,6 +2,9 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Button } from '@/components/common';
+import { useLogoutMutation } from '@/services'
+import { useDispatch } from 'react-redux';
+import { clearAuth } from '@/store/slices/authSlice';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -10,16 +13,18 @@ interface AdminLayoutProps {
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const { user } = useAuthContext();
+  const [logout] = useLogoutMutation()
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
-    // Clear auth state and redirect
-    localStorage.removeItem('access_token');
-    sessionStorage.removeItem('access_token');
-    console.log('🗑️ Tokens cleared from storage');
-    
-    navigate('/');
-    // Reload để clear state
-    window.location.reload();
+    try {
+      await logout();
+      dispatch(clearAuth());
+    } catch (error) {
+      console.error(error)
+    } finally {
+      navigate('/login');
+    }
   };
 
   return (

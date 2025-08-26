@@ -1,5 +1,5 @@
 import { fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
-import { API_CONFIG } from '@/constants';
+import { API_CONFIG, API_ROUTES, API_METHODS } from '@/constants';
 
 // Custom error response type
 export interface ApiErrorResponse {
@@ -18,16 +18,16 @@ export type ContentType = 'json' | 'form-data';
 const baseQuery = fetchBaseQuery({
   baseUrl: API_CONFIG.BASE_URL,
   credentials: 'include', // Important for cookies (backend sẽ tự động gửi)
-  prepareHeaders: (headers) => {
-    // Backend set cookies với httpOnly: true, frontend không thể đọc được
-    // Chỉ có thể sử dụng token từ localStorage/sessionStorage
-    const accessToken = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+  // prepareHeaders: (headers) => {
+  //   // Backend set cookies với httpOnly: true, frontend không thể đọc được
+  //   // Chỉ có thể sử dụng token từ localStorage/sessionStorage
+  //   const accessToken = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
     
-    if (accessToken) {
-      headers.set('Authorization', `Bearer ${accessToken}`);
-    }
-    return headers;
-  },
+  //   if (accessToken) {
+  //     headers.set('Authorization', `Bearer ${accessToken}`);
+  //   }
+  //   return headers;
+  // },
 });
 
 // Enhanced base query with error handling, content-type support, and refresh token logic
@@ -93,7 +93,7 @@ export const createBaseQuery = (): BaseQueryFn<
       const url = String(fetchArgs.url);
       
       // Don't try refresh for auth-related endpoints to prevent infinite loops
-      if (!url.includes('/auth/login') && !url.includes('/auth/register') && !url.includes('/auth/refresh-token')) {
+      if (!url.includes(API_ROUTES.AUTH.LOGIN) && !url.includes(API_ROUTES.AUTH.REGISTER) && !url.includes(API_ROUTES.AUTH.REFRESH_TOKEN)) {
         
         // Try to refresh token
         try {
@@ -101,8 +101,8 @@ export const createBaseQuery = (): BaseQueryFn<
           
           // Call refresh token endpoint - cookies sẽ được gửi tự động
           const refreshResult = await baseQuery({
-            url: '/auth/refresh-token',
-            method: 'POST',
+            url: API_ROUTES.AUTH.REFRESH_TOKEN,
+            method: API_METHODS.POST,
             credentials: 'include',
           }, api, extraOptions);
           
@@ -112,7 +112,7 @@ export const createBaseQuery = (): BaseQueryFn<
             // Cập nhật token trong storage nếu refresh thành công
             const newTokens = (refreshResult.data as any)?.data?.tokens;
             if (newTokens?.accessToken) {
-              localStorage.setItem('access_token', newTokens.accessToken);
+              // localStorage.setItem('access_token', newTokens.accessToken);
               console.log('🔄 Updated access token in storage after refresh');
             }
             
@@ -132,7 +132,7 @@ export const createBaseQuery = (): BaseQueryFn<
           console.error('Error during token refresh:', refreshError);
           await handleLogout();
         }
-      } else if (url.includes('/users/profile')) {
+      } else if (url.includes(API_ROUTES.USERS.PROFILE)) {
         // For profile endpoint, just clear auth state without reload
         console.log('Profile endpoint returned 401, clearing auth state...');
         // Không gọi clearAuthState() để tránh reload
@@ -174,8 +174,6 @@ export const createBaseQuery = (): BaseQueryFn<
 const handleLogout = async () => {
   try {
     // Clear token from storage
-    localStorage.removeItem('access_token');
-    sessionStorage.removeItem('access_token');
     console.log('🗑️ Tokens cleared from storage');
     
     // Call logout endpoint to clear cookies
@@ -185,9 +183,6 @@ const handleLogout = async () => {
     });
   } catch (error) {
     console.error('Error during logout:', error);
-  } finally {
-    // Redirect to login without reload
-    // window.location.href = '/login';
   }
 };
 

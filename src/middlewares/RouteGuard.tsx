@@ -19,17 +19,12 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
   fallback
 }) => {
   const location = useLocation();
-  const { user, isAuthenticated, isLoading } = useAuthContext();
+  const { user, isAuthenticated } = useAuthContext();
   // Use provided routePath or current location
   const currentPath = routePath || location.pathname;
   
   // Get route configuration
   const routeConfig = getRouteConfig(currentPath);
-  
-  // Check if still loading
-  if (isLoading) {
-    return <Loading />;
-  }
   
   // Check route access
   const accessResult = checkRouteAccess(routeConfig, {

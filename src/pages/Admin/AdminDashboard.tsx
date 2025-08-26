@@ -11,7 +11,6 @@ const AdminDashboard: React.FC = () => {
   const { data: productsData, isLoading: productsLoading } = useGetProductsQuery({ page: 1, limit: 5 });
   const { data: categoriesData, isLoading: categoriesLoading } = useGetCategoriesQuery();
   const { data: usersData, isLoading: usersLoading } = useGetUsersQuery();
-  
   const isLoading = productsLoading || categoriesLoading || usersLoading;
 
   if (isLoading) return <Loading />;
