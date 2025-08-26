@@ -2,18 +2,26 @@ import React from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { UserLayout } from '@/components/layouts';
 import { Button, Card } from '@/components/common';
+import { useLogoutMutation } from '@/services'
+import { useDispatch } from 'react-redux';
+import { clearAuth } from '@/store/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuthContext();
+  const [logout] = useLogoutMutation()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Clear auth state and redirect
-    localStorage.removeItem('access_token');
-    sessionStorage.removeItem('access_token');
-    console.log('🗑️ Tokens cleared from storage');
-    
-    // Clear auth state and redirect
-    window.location.href = '/';
+  const handleLogout = async () => {
+    try {
+      await logout();
+      dispatch(clearAuth());
+    } catch (error) {
+      console.error(error)
+    } finally {
+      navigate('/login');
+    }
   };
 
   if (!user) {

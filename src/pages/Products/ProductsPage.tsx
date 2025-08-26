@@ -30,8 +30,8 @@ const ProductsPage: React.FC = () => {
     );
   }
 
-  const products = productsData?.data || [];
-  const totalPages = productsData?.pagination?.totalPages || 1;
+  const products = productsData?.data?.products || [];
+  const totalPages = productsData?.data?.pagination?.totalPages || 1;
 
   const handlePageChange = (page: number) => {
     setFilters(prev => ({ ...prev, page }));

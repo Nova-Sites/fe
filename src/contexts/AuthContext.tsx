@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+// import { useNavigate } from 'react-router-dom';
 import { RootState } from '@/store';
 import { setUser, setAuthenticated, clearAuth } from '@/store/slices/authSlice';
 import { useGetProfileQuery } from '@/services/auth.api';
@@ -26,6 +27,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
+  // const navigate = useNavigate();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   
   // Ref để track nếu đã thử fetch profile
@@ -73,6 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('Profile fetch failed:', profileError);
       // Nếu profile fetch fails, user không authenticated
       dispatch(clearAuth());
+      // navigate('/login');
       hasAttemptedProfileFetch.current = true;
     }
   }, [profileData, profileError, dispatch]);

@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Button } from '@/components/common';
 import { USER_ROLES } from '@/constants';
+import { useLogoutMutation } from '@/services'
+import { useDispatch } from 'react-redux';
+import { clearAuth } from '@/store/slices/authSlice';
+
 
 interface UserLayoutProps {
   children: React.ReactNode;
@@ -11,16 +15,18 @@ interface UserLayoutProps {
 const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthContext();
+  const [logout] = useLogoutMutation()
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
-    // Clear auth state and redirect
-    localStorage.removeItem('access_token');
-    sessionStorage.removeItem('access_token');
-    console.log('🗑️ Tokens cleared from storage');
-    
-    navigate('/');
-    // Reload để clear state
-    window.location.reload();
+    try {
+      await logout();
+      dispatch(clearAuth());
+    } catch (error) {
+      console.error(error)
+    } finally {
+      navigate('/login');
+    }
   };
 
   return (
@@ -32,7 +38,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
             <Link to="/" className="text-xl font-bold text-blue-600">
               Nova Sites
             </Link>
-            
+
             <div className="hidden md:flex space-x-8">
               <Link to="/" className="text-gray-700 hover:text-blue-600">
                 Home
@@ -44,7 +50,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
                 Categories
               </Link>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
                 <>

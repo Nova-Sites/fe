@@ -33,14 +33,7 @@ const LoginPage: React.FC = () => {
       if (result.success && result.data) {
         // Cập nhật state với user data từ response
         dispatch(setUser(result.data.user));
-        dispatch(setAuthenticated(true));
-        
-        // Lưu token vào storage để sử dụng cho API calls
-        if (result.data.tokens?.accessToken) {
-          localStorage.setItem('access_token', result.data.tokens.accessToken);
-          console.log('💾 Token saved to localStorage');
-        }
-        
+        dispatch(setAuthenticated(true));        
         // Redirect to home page after successful login
         navigate('/');
       }

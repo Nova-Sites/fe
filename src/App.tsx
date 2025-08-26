@@ -14,8 +14,8 @@ import { RouteObject } from 'react-router-dom';
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <Router>
+      <Router>
+        <AuthProvider>
           <Suspense fallback={<Loading />}>
             <Routes>
               {/* Public Routes */}
@@ -66,8 +66,8 @@ const App: React.FC = () => {
               <Route path="*" element={<Navigate to="/404" replace />} />
             </Routes>
           </Suspense>
-        </Router>
-      </AuthProvider>
+        </AuthProvider>
+      </Router>
     </ErrorBoundary>
   );
 };
