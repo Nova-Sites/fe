@@ -9,12 +9,16 @@ export { uploadApi } from './upload.api';
 export {
   createBaseQuery,
   createFormData,
-  isSuccessfulResponse,
-  extractData,
-  extractErrorMessage,
   type ContentType,
   type ApiErrorResponse,
 } from './api.config';
+
+// Response helpers now live in utils
+export {
+  isSuccessfulResponse,
+  extractData,
+  extractErrorMessage,
+} from '@/utils/response.utils';
 
 // Export individual hooks for convenience
 export {

@@ -164,7 +164,7 @@ export interface RouteConfig {
 // Route access context
 export interface RouteAccessContext {
   isAuthenticated: boolean;
-  user?: any;
+  user: any;
   currentPath: string;
 }
 

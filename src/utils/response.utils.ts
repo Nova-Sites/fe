@@ -159,3 +159,26 @@ export const rateLimitResponse = (
     path
   };
 };
+
+// Client-side helpers (moved from services/api.config.ts)
+export const isSuccessfulResponse = (response: unknown): boolean => {
+  return (response as { data?: { success?: boolean } })?.data?.success === true;
+};
+
+export const extractData = <T>(response: unknown): T | null => {
+  if (isSuccessfulResponse(response)) {
+    return (response as { data: { data: T } }).data.data;
+  }
+  return null;
+};
+
+export const extractErrorMessage = (response: unknown): string => {
+  const errorResponse = response as { error?: { data?: { message?: string }; message?: string } };
+  if (errorResponse?.error?.data?.message) {
+    return errorResponse.error.data.message;
+  }
+  if (errorResponse?.error?.message) {
+    return errorResponse.error.message;
+  }
+  return 'An unexpected error occurred';
+};
