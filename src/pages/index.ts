@@ -1,5 +1,5 @@
 // Auth Pages
-export { default as LoginPage } from './Auth/LoginPage';
+export { default as LoginPage } from './Auth/LoginPage.tsx';
 export { default as RegisterPage } from './Auth/RegisterPage';
 
 // Main Pages

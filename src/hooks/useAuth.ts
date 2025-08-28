@@ -53,13 +53,11 @@ export const useAuth = () => {
   // Handle profile data changes - chỉ chạy khi có data hoặc error
   useEffect(() => {
     if (profileData?.success && profileData.data) {
-      console.log('Profile fetched successfully:', profileData.data);
       dispatch(setUser(profileData.data));
       dispatch(setAuthenticated(true));
       dispatch(setToken('authenticated')); // Backend quản lý cookies
       hasAttemptedProfileFetch.current = true;
     } else if (profileError) {
-      console.log('Profile fetch failed:', profileError);
       // Nếu profile fetch fails, user không authenticated
       dispatch(clearAuth());
       hasAttemptedProfileFetch.current = true;
