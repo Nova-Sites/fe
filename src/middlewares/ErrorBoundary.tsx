@@ -45,6 +45,7 @@ export class ErrorBoundary extends Component<Props, State> {
       error: undefined, 
       errorInfo: undefined 
     });
+    window.location.reload();
   };
 
   render() {

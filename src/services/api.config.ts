@@ -96,9 +96,7 @@ export const createBaseQuery = (): BaseQueryFn<
       if (!url.includes(API_ROUTES.AUTH.LOGIN) && !url.includes(API_ROUTES.AUTH.REGISTER) && !url.includes(API_ROUTES.AUTH.REFRESH_TOKEN)) {
         
         // Try to refresh token
-        try {
-          console.log('Attempting to refresh token...');
-          
+        try {          
           // Call refresh token endpoint - cookies sẽ được gửi tự động
           const refreshResult = await baseQuery({
             url: API_ROUTES.AUTH.REFRESH_TOKEN,
@@ -106,9 +104,7 @@ export const createBaseQuery = (): BaseQueryFn<
             credentials: 'include',
           }, api, extraOptions);
           
-          if (refreshResult.data) {
-            console.log('Token refreshed successfully, retrying original request...');
-            
+          if (refreshResult.data) {            
             // Cập nhật token trong storage nếu refresh thành công
             const newTokens = (refreshResult.data as any)?.data?.tokens;
             if (newTokens?.accessToken) {
@@ -121,11 +117,9 @@ export const createBaseQuery = (): BaseQueryFn<
             
             // If still 401 after refresh, then logout
             if (result.error && result.error.status === 401) {
-              console.log('Still unauthorized after token refresh, logging out...');
               await handleLogout();
             }
           } else {
-            console.log('Token refresh failed, logging out...');
             await handleLogout();
           }
         } catch (refreshError) {
@@ -145,15 +139,6 @@ export const createBaseQuery = (): BaseQueryFn<
     // Handle other errors
     if (result.error) {
       const error = result.error as ApiErrorResponse;
-      
-      // Log error for debugging
-      console.error('API Error:', {
-        status: error.status,
-        message: error.data?.message || 'Unknown error occurred',
-        errors: error.data?.errors,
-        url: fetchArgs.url,
-        method: fetchArgs.method,
-      });
 
       // Enhance error message for user
       if (error.data?.errors && Object.keys(error.data.errors).length > 0) {
@@ -173,9 +158,6 @@ export const createBaseQuery = (): BaseQueryFn<
 // Helper function to handle logout
 const handleLogout = async () => {
   try {
-    // Clear token from storage
-    console.log('🗑️ Tokens cleared from storage');
-    
     // Call logout endpoint to clear cookies
     await fetch(`${API_CONFIG.BASE_URL}/auth/logout`, {
       method: 'POST',
