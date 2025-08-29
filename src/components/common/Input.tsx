@@ -1,64 +1,73 @@
 import React, { forwardRef } from 'react';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps {
   label?: string;
   error?: string;
   helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  className?: string;
+  type?: React.InputHTMLAttributes<HTMLInputElement>['type'];
+  value?: string | number;
+  defaultValue?: string | number;
+  onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  placeholder?: string;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  multiline?: boolean;
+  rows?: number;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, helperText, leftIcon, rightIcon, className, ...props }, ref) => {
-    const inputClasses = `
-      w-full px-3 py-2 border rounded-lg transition-colors
-      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-      disabled:bg-gray-50 disabled:cursor-not-allowed
-      ${leftIcon ? 'pl-10' : ''}
-      ${rightIcon ? 'pr-10' : ''}
-      ${error 
-        ? 'border-red-300 focus:ring-red-500' 
-        : 'border-gray-300 hover:border-gray-400'
-      }
-      ${className || ''}
-    `.trim();
-
+  (
+    {
+      label,
+      error,
+      helperText,
+      leftIcon,
+      rightIcon,
+      className,
+      type,
+      value,
+      defaultValue,
+      onChange,
+      placeholder,
+      disabled,
+      fullWidth = true,
+      multiline,
+      rows,
+    },
+    ref,
+  ) => {
     return (
-      <div className="w-full">
-        {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {label}
-          </label>
-        )}
-        
-        <div className="relative">
-          {leftIcon && (
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-              {leftIcon}
-            </div>
-          )}
-          
-          <input
-            ref={ref}
-            className={inputClasses}
-            {...props}
-          />
-          
-          {rightIcon && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
-              {rightIcon}
-            </div>
-          )}
-        </div>
-        
-        {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
-        )}
-        
-        {helperText && !error && (
-          <p className="mt-1 text-sm text-gray-500">{helperText}</p>
-        )}
-      </div>
+      <TextField
+        inputRef={ref}
+        label={label}
+        error={Boolean(error)}
+        helperText={error || helperText}
+        className={className}
+        type={type}
+        value={value}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        placeholder={placeholder}
+        disabled={disabled}
+        fullWidth={fullWidth}
+        multiline={multiline}
+        rows={rows}
+        InputProps={{
+          startAdornment: leftIcon ? (
+            <InputAdornment position="start">{leftIcon}</InputAdornment>
+          ) : undefined,
+          endAdornment: rightIcon ? (
+            <InputAdornment position="end">{rightIcon}</InputAdornment>
+          ) : undefined,
+        }}
+        variant="outlined"
+        size="medium"
+      />
     );
   }
 );
