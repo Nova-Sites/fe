@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+//
 import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -8,7 +8,8 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
+import * as React from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const NAVIGATION: Navigation = [
   {
@@ -16,14 +17,14 @@ const NAVIGATION: Navigation = [
     title: 'Main items',
   },
   {
-    segment: 'dashboard',
+    segment: '',
     title: 'Dashboard',
     icon: <DashboardIcon />,
   },
   {
-    segment: 'orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
+    segment: 'products',
+    title: 'Products',
+    icon: <LayersIcon />,
   },
   {
     kind: 'divider',
@@ -31,6 +32,11 @@ const NAVIGATION: Navigation = [
   {
     kind: 'header',
     title: 'Analytics',
+  },
+  {
+    segment: 'categories',
+    title: 'Categories',
+    icon: <DescriptionIcon />,
   },
   {
     segment: 'reports',
@@ -50,9 +56,9 @@ const NAVIGATION: Navigation = [
     ],
   },
   {
-    segment: 'integrations',
-    title: 'Integrations',
-    icon: <LayersIcon />,
+    segment: 'orders',
+    title: 'Orders',
+    icon: <ShoppingCartIcon />,
   },
 ];
 
@@ -72,53 +78,45 @@ const demoTheme = createTheme({
   },
 });
 
-function DemoPageContent({ pathname }: { pathname: string }) {
-  return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <Typography>Dashboard content for {pathname}</Typography>
-    </Box>
+export default function AdminLayout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const pathnameRelativeToAdmin = React.useMemo(() => {
+    if (location.pathname.startsWith('/admin')) {
+      const rest = location.pathname.slice('/admin'.length);
+      return rest.length === 0 ? '/' : rest;
+    }
+    return location.pathname;
+  }, [location.pathname]);
+
+  const router = React.useMemo(
+    () => ({
+      pathname: pathnameRelativeToAdmin,
+      searchParams: new URLSearchParams(location.search),
+      navigate: (path: string) => {
+        const normalized = path === '' || path === '/' ? '/admin' : path;
+        const resolved = normalized.startsWith('/admin')
+          ? normalized
+          : `/admin${normalized.startsWith('/') ? '' : '/'}${normalized}`;
+        navigate(resolved);
+      },
+    }) as any,
+    [navigate, pathnameRelativeToAdmin, location.search],
   );
-}
-
-interface DemoProps {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * Remove this when copying and pasting into your project.
-   */
-  window?: () => Window;
-}
-
-export default function DashboardLayoutBasic(props: DemoProps) {
-  const { window } = props;
-
-  const router = useDemoRouter('/dashboard');
-
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window !== undefined ? window() : undefined;
 
   return (
-    // Remove this provider when copying and pasting into your project.
-    <DemoProvider window={demoWindow}>
-      {/* preview-start */}
-      <AppProvider
-        navigation={NAVIGATION}
-        router={router}
-        theme={demoTheme}
-        window={demoWindow}
-      >
-        <DashboardLayout>
-          <DemoPageContent pathname={router.pathname} />
-        </DashboardLayout>
-      </AppProvider>
-      {/* preview-end */}
-    </DemoProvider>
+    <AppProvider navigation={NAVIGATION} router={router} theme={demoTheme}>
+      <DashboardLayout>
+        <Box
+          sx={{
+            py: 4,
+            px: 2,
+          }}
+        >
+          <Outlet />
+        </Box>
+      </DashboardLayout>
+    </AppProvider>
   );
 }
