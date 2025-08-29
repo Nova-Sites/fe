@@ -1,149 +1,194 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useRegisterMutation } from '@/services/auth.api';
-import { Button, Input } from '@/components/common';
+import { AppProvider } from '@toolpad/core/AppProvider';
+import { SignInPage } from '@toolpad/core/SignInPage';
+import { useTheme } from '@mui/material/styles';
+import { IconButton, Alert, Box } from '@mui/material';
+import { Button as CommonButton, Input as CommonInput } from '@/components/common';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
+const providers = [{ id: 'credentials', name: 'Email, Username and Password' }];
+
+function Title() {
+  return <h2 style={{ marginBottom: 8 }}>Create account</h2>;
+}
+
+function EmailAndUsernameFields() {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <CommonInput
+        id="email"
+        label="Email"
+        name="email"
+        type="email"
+        fullWidth
+        leftIcon={<AccountCircle fontSize="inherit" />}
+      />
+      <CommonInput
+        id="username"
+        label="Username"
+        name="username"
+        fullWidth
+        leftIcon={<AccountCircle fontSize="inherit" />}
+      />
+    </Box>
+  );
+}
+
+function SinglePasswordField({ id = 'password', label = 'Password' }: { id?: string; label?: string }) {
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event: React.MouseEvent) => {
+    event.preventDefault();
+  };
+  return (
+    <CommonInput
+      label={label}
+      id={id}
+      type={showPassword ? 'text' : 'password'}
+      fullWidth
+      rightIcon={
+        <IconButton
+          aria-label="toggle password visibility"
+          onClick={handleClickShowPassword}
+          onMouseDown={handleMouseDownPassword}
+          edge="end"
+          size="small"
+        >
+          {showPassword ? <VisibilityOff fontSize="inherit" /> : <Visibility fontSize="inherit" />}
+        </IconButton>
+      }
+    />
+  );
+}
+
+function PasswordAndConfirmFields() {
+  return (
+    <>
+      <SinglePasswordField id="password" label="Password" />
+      <SinglePasswordField id="confirm-password" label="Confirm Password" />
+    </>
+  );
+}
+
+function SubmitButton({ loading }: { loading?: boolean | null }) {
+  return (
+    <CommonButton type="submit" variant="outline" size="md" fullWidth loading={Boolean(loading)} className='!mb-2 !mt-4'>
+      Create account
+    </CommonButton>
+  );
+}
+
+type SubtitleProps = { message?: string; severity?: 'error' | 'warning' | 'info' | 'success' };
+
+function Subtitle({ message, severity = 'warning' }: SubtitleProps) {
+  return (
+    <Alert sx={{ mb: 2, px: 1, py: 0.25, width: '100%' }} severity={severity}>
+      {message ?? 'Fill the form below to create your account.'}
+    </Alert>
+  );
+}
 
 const RegisterPage: React.FC = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthContext();
   const [registerMutation, { isLoading, error }] = useRegisterMutation();
-  
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const [apiError, setApiError] = React.useState<string | null>(null);
 
-  // Redirect if already authenticated
+  const extractErrorMessage = React.useCallback((err: unknown): string => {
+    const fallback = 'Registration failed. Please check your details and try again.';
+    if (!err) return fallback;
+    const anyErr = err as any;
+    return (
+      anyErr?.data?.message ||
+      anyErr?.error ||
+      anyErr?.message ||
+      (typeof err === 'string' ? err : undefined) ||
+      fallback
+    );
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      setApiError(extractErrorMessage(error));
+    }
+  }, [error, extractErrorMessage]);
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-    
-    try {
-      const result = await registerMutation({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      }).unwrap();
-      
-      if (result.success) {
-        // Show success message and redirect to login
-        alert('Registration successful! Please check your email for OTP verification.');
-        navigate('/login');
-      }
-    } catch (error) {
-      console.error('Registration failed:', error);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
   if (isAuthenticated) {
-    return null; // Will redirect due to useEffect
+    return null;
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-        </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <Input
-              label="Username"
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              placeholder="Enter your username"
-            />
-            
-            <Input
-              label="Email Address"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-            />
-            
-            <Input
-              label="Password"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-            />
-            
-            <Input
-              label="Confirm Password"
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              placeholder="Confirm your password"
-            />
-          </div>
+    <AppProvider theme={theme}>
+      <SignInPage
+        signIn={(_provider, formData) => {
+          try {
+            const username = formData?.get('username') as string;
+            const email = formData?.get('email') as string;
+            const password = formData?.get('password') as string;
+            const confirmPassword = formData?.get('confirmPassword') as string;
 
-          {error && (
-            <div className="text-red-600 text-sm text-center">
-              {(error as any)?.data?.message || (error as any)?.message || 'Registration failed'}
-            </div>
-          )}
+            if (!username || !email || !password || !confirmPassword) {
+              setApiError('Please fill in all fields.');
+              return;
+            }
+            if (password !== confirmPassword) {
+              setApiError('Passwords do not match.');
+              return;
+            }
 
-          <div>
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Creating account...' : 'Create account'}
-            </Button>
-          </div>
+            registerMutation({ username, email, password })
+              .unwrap()
+              .then((result) => {
+                if (result.success) {
+                  setApiError(null);
+                  navigate('/login');
+                }
+              })
+              .catch((err) => {
+                const msg = extractErrorMessage(err);
+                setApiError(msg);
+                console.error('Registration failed:', err);
+              });
+          } catch (err) {
+            const msg = extractErrorMessage(err);
+            setApiError(msg);
+            console.error('Registration failed:', err);
+          }
+        }}
+        slots={{
+          title: Title,
+          subtitle: () => (
+            <Subtitle message={apiError ?? undefined} severity={apiError ? 'error' : 'info'} />
+          ),
+          emailField: EmailAndUsernameFields,
+          passwordField: PasswordAndConfirmFields,
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => navigate('/login')}
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
+          submitButton: (props: any) => <SubmitButton loading={isLoading} {...props} />,
+          signUpLink: () => (
+            <div className='text-sm'>
+              Already have an account? <Link to="/login" className='ml-2 text-[#0288d1] underline'>
                 Sign in
-              </button>
-            </p>
-          </div>
-        </form>
-      </div>
-    </div>
+              </Link>
+            </div>
+          ),
+          // remove extra slots to keep field order clean
+        }}
+        slotProps={{ form: { noValidate: true }, submitButton: { loading: isLoading } }}
+        providers={providers}
+      />
+    </AppProvider>
   );
 };
 

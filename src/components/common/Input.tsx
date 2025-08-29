@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helperText?: string;
@@ -29,6 +29,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       leftIcon,
       rightIcon,
       className,
+      id,
+      name,
       type,
       value,
       defaultValue,
@@ -48,6 +50,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         error={Boolean(error)}
         helperText={error || helperText}
         className={className}
+        id={id}
+        name={name}
         type={type}
         value={value}
         defaultValue={defaultValue}
@@ -66,7 +70,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ) : undefined,
         }}
         variant="outlined"
-        size="medium"
+        size="small"
       />
     );
   }

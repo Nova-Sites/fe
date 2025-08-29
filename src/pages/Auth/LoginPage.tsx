@@ -1,17 +1,6 @@
 import * as React from 'react';
-import {
-  Button,
-  FormControl,
-  Checkbox,
-  FormControlLabel,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-  InputAdornment,
-  Link,
-  Alert,
-  IconButton,
-} from '@mui/material';
+import { Checkbox, FormControlLabel, Alert, IconButton } from '@mui/material';
+import { Link } from 'react-router-dom';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -23,30 +12,20 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { useDispatch } from 'react-redux';
 import { setUser, setAuthenticated } from '@/store/slices/authSlice';
 import { useLoginMutation } from '@/services/auth.api';
+import { Button as CommonButton, Input as CommonInput } from '@/components/common';
 
 
 const providers = [{ id: 'credentials', name: 'Email and Password' }];
 
 function CustomEmailField() {
   return (
-    <TextField
-      id="input-with-icon-textfield"
+    <CommonInput
       label="Email"
+      id="email"
       name="email"
       type="email"
-      size="small"
-      required
       fullWidth
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <AccountCircle fontSize="inherit" />
-            </InputAdornment>
-          ),
-        },
-      }}
-      variant="outlined"
+      leftIcon={<AccountCircle fontSize="inherit" />}
     />
   );
 }
@@ -61,60 +40,38 @@ function CustomPasswordField() {
   };
 
   return (
-    <FormControl sx={{ my: 2 }} fullWidth variant="outlined">
-      <InputLabel size="small" htmlFor="outlined-adornment-password">
-        Password
-      </InputLabel>
-      <OutlinedInput
-        id="outlined-adornment-password"
-        type={showPassword ? 'text' : 'password'}
-        name="password"
-        size="small"
-        endAdornment={
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={handleClickShowPassword}
-              onMouseDown={handleMouseDownPassword}
-              edge="end"
-              size="small"
-            >
-              {showPassword ? (
-                <VisibilityOff fontSize="inherit" />
-              ) : (
-                <Visibility fontSize="inherit" />
-              )}
-            </IconButton>
-          </InputAdornment>
-        }
-        label="Password"
-      />
-    </FormControl>
+    <CommonInput
+      label="Password"
+      id="password"
+      name="password"
+      type={showPassword ? 'text' : 'password'}
+      fullWidth
+      rightIcon={
+        <IconButton
+          aria-label="toggle password visibility"
+          onClick={handleClickShowPassword}
+          onMouseDown={handleMouseDownPassword}
+          edge="end"
+          size="small"
+        >
+          {showPassword ? <VisibilityOff fontSize="inherit" /> : <Visibility fontSize="inherit" />}
+        </IconButton>
+      }
+    />
   );
 }
 
-function CustomButton({
-  loading,
-}: { loading?: boolean | null } & React.ComponentProps<typeof Button>) {
+function CustomButton({ loading }: { loading?: boolean | null }) {
   return (
-    <Button
-      type="submit"
-      variant="outlined"
-      color="info"
-      size="small"
-      disableElevation
-      fullWidth
-      disabled={Boolean(loading)}
-      sx={{ my: 2 }}
-    >
-      {Boolean(loading) ? 'Loading...' : 'Log In'}
-    </Button>
+    <CommonButton type="submit" variant="outline" size="md" fullWidth loading={Boolean(loading)} className='!my-2'>
+      Log In
+    </CommonButton>
   );
 }
 
 function SignUpLink() {
   return (
-    <Link href="/" variant="body2">
+    <Link to="/register" className='text-[#0288d1] text-sm underline'>
       Sign up
     </Link>
   );
@@ -122,7 +79,7 @@ function SignUpLink() {
 
 function ForgotPasswordLink() {
   return (
-    <Link href="/" variant="body2">
+    <Link to="/" className='text-[#0288d1] text-sm'>
       Forgot password?
     </Link>
   );
@@ -248,10 +205,10 @@ export default function SlotsSignIn() {
           rememberMe: RememberMeCheckbox,
           forgotPasswordLink: ForgotPasswordLink,
         }}
-        slotProps={{ 
+        slotProps={{
           form: { noValidate: true },
           submitButton: { loading: isLoading },
-         }}
+        }}
         providers={providers}
       />
     </AppProvider>
