@@ -49,17 +49,22 @@ const App: React.FC = () => {
                 />
               ))}
 
-              {/* Protected Admin Routes */}
+              {/* Protected Admin Routes with nested children */}
               {adminRoutes.map((route: RouteObject) => (
                 <Route
                   key={route.path}
                   path={route.path}
-                  element={
-                    <RouteGuard>
-                      {route.element}
-                    </RouteGuard>
-                  }
-                />
+                  element={<RouteGuard>{route.element}</RouteGuard>}
+                >
+                  {route.children?.map((child: RouteObject, idx: number) => (
+                    <Route
+                      key={(child.path as string) || `index-${idx}`}
+                      index={Boolean((child as any).index)}
+                      path={child.path as string | undefined}
+                      element={child.element}
+                    />
+                  ))}
+                </Route>
               ))}
 
               {/* Catch all route -> 404 */}

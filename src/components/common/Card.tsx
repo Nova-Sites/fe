@@ -32,7 +32,7 @@ const Card: React.FC<CardProps> = ({
   const hoverClasses = hover ? 'hover:shadow-lg transition-shadow duration-200' : '';
 
   const classes = `
-    bg-white rounded-lg border border-gray-200
+    rounded-lg border border-gray-200
     ${paddingClasses[padding]}
     ${shadowClasses[shadow]}
     ${hoverClasses}
