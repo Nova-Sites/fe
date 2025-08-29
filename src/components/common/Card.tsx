@@ -1,48 +1,33 @@
 import React from 'react';
+import MuiCard from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 interface CardProps {
   children: React.ReactNode;
   className?: string;
   padding?: 'none' | 'sm' | 'md' | 'lg';
-  shadow?: 'none' | 'sm' | 'md' | 'lg';
-  hover?: boolean;
+  elevation?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
 }
+
+const paddingMap = {
+  none: 0,
+  sm: 1.5,
+  md: 3,
+  lg: 4,
+} as const;
 
 const Card: React.FC<CardProps> = ({
   children,
   className = '',
   padding = 'md',
-  shadow = 'md',
-  hover = false,
+  elevation = 1,
 }) => {
-  const paddingClasses = {
-    none: '',
-    sm: 'p-3',
-    md: 'p-6',
-    lg: 'p-8',
-  };
-
-  const shadowClasses = {
-    none: '',
-    sm: 'shadow-sm',
-    md: 'shadow-md',
-    lg: 'shadow-lg',
-  };
-
-  const hoverClasses = hover ? 'hover:shadow-lg transition-shadow duration-200' : '';
-
-  const classes = `
-    rounded-lg border border-gray-200
-    ${paddingClasses[padding]}
-    ${shadowClasses[shadow]}
-    ${hoverClasses}
-    ${className}
-  `.trim();
-
   return (
-    <div className={classes}>
-      {children}
-    </div>
+    <MuiCard elevation={elevation} className={className}>
+      <CardContent sx={{ p: paddingMap[padding] }}>
+        {children}
+      </CardContent>
+    </MuiCard>
   );
 };
 

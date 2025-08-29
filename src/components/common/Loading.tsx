@@ -1,4 +1,7 @@
 import React from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 interface LoadingProps {
   size?: 'sm' | 'md' | 'lg';
@@ -6,51 +9,32 @@ interface LoadingProps {
   className?: string;
 }
 
+const sizeToPx = {
+  sm: 16,
+  md: 32,
+  lg: 48,
+} as const;
+
+const textSizeSx = {
+  sm: { fontSize: 12 },
+  md: { fontSize: 14 },
+  lg: { fontSize: 16 },
+} as const;
+
 const Loading: React.FC<LoadingProps> = ({ 
   size = 'md', 
   text = 'Loading...', 
   className = '' 
 }) => {
-  const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
-  };
-
-  const textSizeClasses = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-lg',
-  };
-
   return (
-    <div className={`flex flex-col items-center justify-center ${className}`}>
-      <svg
-        className={`animate-spin ${sizeClasses[size]} text-blue-600`}
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        />
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        />
-      </svg>
+    <Box className={className} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <CircularProgress size={sizeToPx[size]} />
       {text && (
-        <p className={`mt-2 text-gray-600 ${textSizeClasses[size]}`}>
+        <Typography sx={{ mt: 1, color: 'text.secondary', ...textSizeSx[size] }}>
           {text}
-        </p>
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 
