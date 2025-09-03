@@ -9,7 +9,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider, type Navigation, type Router } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import * as React from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const NAVIGATION: Navigation = [
   {
@@ -17,7 +17,7 @@ const NAVIGATION: Navigation = [
     title: 'Main items',
   },
   {
-    segment: '',
+    segment: 'admin',
     title: 'Dashboard',
     icon: <DashboardIcon />,
   },
@@ -81,11 +81,18 @@ export default function AdminLayout() {
       pathname: pathnameRelativeToAdmin,
       searchParams: new URLSearchParams(location.search),
       navigate: (url: string | URL) => {
-        const path = typeof url === 'string' ? url : url.pathname;
-        const normalized = !path || path === '/' ? '/admin' : path;
-        const resolved = normalized.startsWith('/admin')
-          ? normalized
-          : `/admin${normalized.startsWith('/') ? '' : '/'}${normalized}`;
+        const rawPath = typeof url === 'string' ? url : url.pathname;
+
+        let resolved: string;
+
+        if (!rawPath || rawPath === '/') {
+          resolved = '/';
+        } else if (rawPath.startsWith('/admin')) {
+          resolved = rawPath;
+        } else {
+          resolved = `/admin${rawPath.startsWith('/') ? '' : '/'}${rawPath}`;
+        }
+
         navigate(resolved);
       },
     }),
@@ -93,14 +100,22 @@ export default function AdminLayout() {
   );
 
   return (
-    <AppProvider 
-    navigation={NAVIGATION} 
-    router={router} 
-    theme={demoTheme}
-    branding={{
-      logo: <img src="https://cdn.pixabay.com/photo/2023/10/16/06/10/website-8318520_1280.png" alt="Logo" style={{ width: 32, height: 32 }} />,
-      title: 'Admin Panel',
-    }}
+    <AppProvider
+      navigation={NAVIGATION}
+      router={router}
+      theme={demoTheme}
+      branding={{
+        logo: (
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <img
+              src="https://cdn.pixabay.com/photo/2023/10/16/06/10/website-8318520_1280.png"
+              alt="Logo"
+              style={{ width: 32, height: 32 }}
+            />
+          </Link>
+        ),
+        title: 'Admin Panel',
+      }}
     >
       <DashboardLayout>
         <Box>
