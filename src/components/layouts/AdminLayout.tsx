@@ -1,12 +1,12 @@
 import Box from '@mui/material/Box';
 //
-import { createTheme } from '@mui/material/styles';
+import toolpadTheme from '@/themes/toolpadTheme';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
-import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
+import { AppProvider, type Navigation, type Router } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import * as React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -62,21 +62,7 @@ const NAVIGATION: Navigation = [
   },
 ];
 
-const demoTheme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: 'data-toolpad-color-scheme',
-  },
-  colorSchemes: { light: true, dark: true },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 600,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
+const demoTheme = toolpadTheme;
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -90,30 +76,34 @@ export default function AdminLayout() {
     return location.pathname;
   }, [location.pathname]);
 
-  const router = React.useMemo(
+  const router: Router = React.useMemo(
     () => ({
       pathname: pathnameRelativeToAdmin,
       searchParams: new URLSearchParams(location.search),
-      navigate: (path: string) => {
-        const normalized = path === '' || path === '/' ? '/admin' : path;
+      navigate: (url: string | URL) => {
+        const path = typeof url === 'string' ? url : url.pathname;
+        const normalized = !path || path === '/' ? '/admin' : path;
         const resolved = normalized.startsWith('/admin')
           ? normalized
           : `/admin${normalized.startsWith('/') ? '' : '/'}${normalized}`;
         navigate(resolved);
       },
-    }) as any,
+    }),
     [navigate, pathnameRelativeToAdmin, location.search],
   );
 
   return (
-    <AppProvider navigation={NAVIGATION} router={router} theme={demoTheme}>
+    <AppProvider 
+    navigation={NAVIGATION} 
+    router={router} 
+    theme={demoTheme}
+    branding={{
+      logo: <img src="https://cdn.pixabay.com/photo/2023/10/16/06/10/website-8318520_1280.png" alt="Logo" style={{ width: 32, height: 32 }} />,
+      title: 'Admin Panel',
+    }}
+    >
       <DashboardLayout>
-        <Box
-          sx={{
-            py: 4,
-            px: 2,
-          }}
-        >
+        <Box>
           <Outlet />
         </Box>
       </DashboardLayout>
