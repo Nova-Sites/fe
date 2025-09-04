@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import { visuallyHidden } from '@mui/utils';
 import Pagination from './Pagination';
+import { ROWS_PER_PAGE_OPTIONS } from '@/constants';
 
 export type SortOrder = 'asc' | 'desc';
 
@@ -44,6 +45,7 @@ export interface DataTableProps<T extends { id: string | number }> {
   checkboxSelection?: boolean;
   selectedIds?: Array<T['id']>;
   onSelectAllClick?: (checked: boolean) => void;
+  onRowSelectChange?: (id: T['id'], checked: boolean) => void;
   onRowClick?: (row: T) => void;
   // Search (optional)
   searchable?: boolean;
@@ -60,7 +62,7 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
     total,
     page,
     rowsPerPage,
-    rowsPerPageOptions = [5, 10, 25],
+    rowsPerPageOptions = ROWS_PER_PAGE_OPTIONS,
     order = 'asc',
     orderBy = null,
     onRequestSort,
@@ -69,6 +71,7 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
     checkboxSelection = false,
     selectedIds = [],
     onSelectAllClick,
+    onRowSelectChange,
     onRowClick,
     searchable = false,
     searchPlaceholder = 'Search…',
@@ -156,7 +159,15 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
               >
                 {checkboxSelection && (
                   <TableCell padding="checkbox">
-                    <Checkbox color="primary" checked={selectedIds.includes(row.id)} />
+                    <Checkbox
+                      color="primary"
+                      checked={selectedIds.includes(row.id)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        if (onRowSelectChange) onRowSelectChange(row.id, e.target.checked);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
                   </TableCell>
                 )}
                 {columns.map((col) => (
@@ -179,15 +190,15 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
         </Table>
       </TableContainer>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
-        <Typography variant="body2" color="text.secondary">
-          Page {page} of {pageCount}
-        </Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2, gap: 2, flexWrap: 'wrap' }}>
         <Pagination
           page={page}
           count={pageCount}
           onChange={(_, p) => onPageChange && onPageChange(p)}
           size="medium"
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={rowsPerPageOptions}
+          onRowsPerPageChange={onRowsPerPageChange}
         />
       </Stack>
     </Paper>
