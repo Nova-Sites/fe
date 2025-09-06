@@ -83,6 +83,7 @@ export const FRONTEND_ROUTES = {
     HOME: '/',
     LOGIN: '/login',
     REGISTER: '/register',
+    VERIFY_OTP: '/verify-otp',
     PRODUCTS: '/products',
     PRODUCT_DETAIL: '/products/:slug',
     CATEGORIES: '/categories',

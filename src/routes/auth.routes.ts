@@ -6,6 +6,9 @@ import { FRONTEND_ROUTES } from '@/constants';
 // Lazy load auth components
 const LoginPage = lazy(() => import('@/pages/Auth/LoginPage'));
 const RegisterPage = lazy(() => import('@/pages/Auth/RegisterPage'));
+const OTPVerificationPage = lazy(
+  () => import('@/pages/Auth/OTPVerificationPage')
+);
 
 // Auth route configurations
 export const authRoutes: RouteObject[] = [
@@ -16,6 +19,10 @@ export const authRoutes: RouteObject[] = [
   {
     path: FRONTEND_ROUTES.PUBLIC.REGISTER,
     element: React.createElement(RegisterPage),
+  },
+  {
+    path: FRONTEND_ROUTES.PUBLIC.VERIFY_OTP,
+    element: React.createElement(OTPVerificationPage),
   },
 ];
 

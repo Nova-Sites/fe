@@ -98,7 +98,11 @@ function ForgotPasswordLink() {
 }
 
 function Title() {
-  return <h2 style={{ marginBottom: 8 }}>Login</h2>;
+  return (
+    <h2 style={{ marginBottom: 8 }} className='font-bold text-3xl'>
+      Login
+    </h2>
+  );
 }
 
 type SubtitleProps = {

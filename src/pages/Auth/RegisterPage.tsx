@@ -1,7 +1,6 @@
 import React, { ButtonHTMLAttributes, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { useRegisterMutation } from '@/services/auth.api';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { SignInPage } from '@toolpad/core/SignInPage';
 import { useTheme } from '@mui/material/styles';
@@ -14,11 +13,16 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ApiErrorResponse } from '@/services';
+import { useAuth } from '@/hooks';
 
 const providers = [{ id: 'credentials', name: 'Email, Username and Password' }];
 
 function Title() {
-  return <h2 style={{ marginBottom: 8 }}>Create account</h2>;
+  return (
+    <h2 style={{ marginBottom: 8 }} className='font-bold text-3xl'>
+      Create account
+    </h2>
+  );
 }
 
 function EmailAndUsernameFields() {
@@ -45,9 +49,11 @@ function EmailAndUsernameFields() {
 
 function SinglePasswordField({
   id = 'password',
+  name = 'password',
   label = 'Password',
 }: {
   id?: string;
+  name: string;
   label?: string;
 }) {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -58,6 +64,7 @@ function SinglePasswordField({
   return (
     <CommonInput
       label={label}
+      name={name}
       id={id}
       type={showPassword ? 'text' : 'password'}
       fullWidth
@@ -83,8 +90,12 @@ function SinglePasswordField({
 function PasswordAndConfirmFields() {
   return (
     <>
-      <SinglePasswordField id='password' label='Password' />
-      <SinglePasswordField id='confirm-password' label='Confirm Password' />
+      <SinglePasswordField id='password' name='password' label='Password' />
+      <SinglePasswordField
+        id='confirm-password'
+        name='confirmPassword'
+        label='Confirm Password'
+      />
     </>
   );
 }
@@ -120,8 +131,8 @@ function Subtitle({ message, severity = 'warning' }: SubtitleProps) {
 const RegisterPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { register, isLoading } = useAuth();
   const { isAuthenticated } = useAuthContext();
-  const [registerMutation, { isLoading, error }] = useRegisterMutation();
   const [apiError, setApiError] = React.useState<string | null>(null);
 
   const extractErrorMessage = React.useCallback((err: unknown): string => {
@@ -139,12 +150,6 @@ const RegisterPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (error) {
-      setApiError(extractErrorMessage(error));
-    }
-  }, [error, extractErrorMessage]);
-
-  useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
     }
@@ -157,7 +162,7 @@ const RegisterPage: React.FC = () => {
   return (
     <AppProvider theme={theme}>
       <SignInPage
-        signIn={(_provider, formData) => {
+        signIn={async (_provider, formData) => {
           try {
             const username = formData?.get('username') as string;
             const email = formData?.get('email') as string;
@@ -166,30 +171,31 @@ const RegisterPage: React.FC = () => {
 
             if (!username || !email || !password || !confirmPassword) {
               setApiError('Please fill in all fields.');
-              return;
+              return { status: 'error' };
             }
             if (password !== confirmPassword) {
               setApiError('Passwords do not match.');
-              return;
+              return { status: 'error' };
             }
 
-            registerMutation({ username, email, password })
-              .unwrap()
-              .then(result => {
-                if (result.success) {
-                  setApiError(null);
-                  navigate('/login');
-                }
-              })
-              .catch(err => {
-                const msg = extractErrorMessage(err);
-                setApiError(msg);
-                console.error('Registration failed:', err);
+            const result = await register({ username, email, password });
+            if (result.success) {
+              // Redirect to OTP verification page
+              navigate('/verify-otp', {
+                state: { email, username, from: '/login' },
               });
+              return { status: 'success' };
+            } else if (result.error) {
+              setApiError(extractErrorMessage(result.error));
+              return { status: 'error' };
+            }
+            return { status: 'error' };
           } catch (err) {
-            const msg = extractErrorMessage(err);
-            setApiError(msg);
             console.error('Registration failed:', err);
+            return {
+              status: 'error',
+              error: extractErrorMessage(err),
+            };
           }
         }}
         slots={{
