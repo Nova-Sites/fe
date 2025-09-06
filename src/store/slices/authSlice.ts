@@ -30,7 +30,7 @@ const authSlice = createSlice({
       state.token = action.payload;
       // Don't set isAuthenticated here - it should be set when user data is loaded
     },
-    clearAuth: (state) => {
+    clearAuth: state => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
@@ -39,7 +39,7 @@ const authSlice = createSlice({
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -52,14 +52,14 @@ const authSlice = createSlice({
   },
 });
 
-export const { 
-  setUser, 
-  setToken, 
-  clearAuth, 
-  setError, 
-  clearError, 
+export const {
+  setUser,
+  setToken,
+  clearAuth,
+  setError,
+  clearError,
   setLoading,
-  setAuthenticated
+  setAuthenticated,
 } = authSlice.actions;
 
 export default authSlice.reducer;

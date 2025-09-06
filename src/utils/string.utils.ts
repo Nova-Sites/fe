@@ -1,7 +1,8 @@
 // Convert string to title case
 export const toTitleCase = (str: string): string => {
-  return str.replace(/\w\S*/g, (txt) => 
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  return str.replace(
+    /\w\S*/g,
+    txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
   );
 };
 
@@ -18,7 +19,7 @@ export const toSlug = (str: string): string => {
 // Convert string to camelCase
 export const toCamelCase = (str: string): string => {
   return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => 
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
       index === 0 ? word.toLowerCase() : word.toUpperCase()
     )
     .replace(/\s+/g, '');
@@ -27,7 +28,7 @@ export const toCamelCase = (str: string): string => {
 // Convert string to PascalCase
 export const toPascalCase = (str: string): string => {
   return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word) => word.toUpperCase())
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, word => word.toUpperCase())
     .replace(/\s+/g, '');
 };
 
@@ -40,7 +41,11 @@ export const toSnakeCase = (str: string): string => {
 };
 
 // Truncate string with ellipsis
-export const truncate = (str: string, length: number, suffix: string = '...'): string => {
+export const truncate = (
+  str: string,
+  length: number,
+  suffix: string = '...'
+): string => {
   if (str.length <= length) return str;
   return str.substring(0, length) + suffix;
 };
@@ -62,7 +67,8 @@ export const normalizeWhitespace = (str: string): string => {
 
 // Generate random string
 export const generateRandomString = (length: number = 8): string => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));

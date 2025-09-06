@@ -1,5 +1,5 @@
 // Standard API response interface
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
   data?: T;
@@ -19,7 +19,7 @@ export const successResponse = <T>(
     message,
     data,
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
@@ -34,12 +34,12 @@ export const errorResponse = (
     message,
     error,
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
 // Pagination response interface
-export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
+export interface PaginatedResponse<T = unknown> extends ApiResponse<T[]> {
   pagination: {
     page: number;
     limit: number;
@@ -60,7 +60,7 @@ export const paginatedResponse = <T>(
   path?: string
 ): PaginatedResponse<T> => {
   const totalPages = Math.ceil(total / limit);
-  
+
   return {
     success: true,
     message,
@@ -71,16 +71,16 @@ export const paginatedResponse = <T>(
       total,
       totalPages,
       hasNext: page < totalPages,
-      hasPrev: page > 1
+      hasPrev: page > 1,
     },
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
 // Validation error response
 export const validationErrorResponse = (
-  errors: Array<{ field: string; message: string; value?: any }>,
+  errors: Array<{ field: string; message: string; value?: unknown }>,
   path?: string
 ): ApiResponse => {
   return {
@@ -89,7 +89,7 @@ export const validationErrorResponse = (
     error: 'Validation errors occurred',
     data: { errors },
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
@@ -102,7 +102,7 @@ export const notFoundResponse = (
     success: false,
     message: `${resource} not found`,
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
@@ -115,7 +115,7 @@ export const unauthorizedResponse = (
     success: false,
     message,
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
@@ -128,7 +128,7 @@ export const forbiddenResponse = (
     success: false,
     message,
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
@@ -141,7 +141,7 @@ export const conflictResponse = (
     success: false,
     message,
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
@@ -156,7 +156,7 @@ export const rateLimitResponse = (
     error: 'Rate limit exceeded',
     data: { retryAfter },
     timestamp: new Date().toISOString(),
-    path
+    path,
   };
 };
 
@@ -173,7 +173,9 @@ export const extractData = <T>(response: unknown): T | null => {
 };
 
 export const extractErrorMessage = (response: unknown): string => {
-  const errorResponse = response as { error?: { data?: { message?: string }; message?: string } };
+  const errorResponse = response as {
+    error?: { data?: { message?: string }; message?: string };
+  };
   if (errorResponse?.error?.data?.message) {
     return errorResponse.error.data.message;
   }

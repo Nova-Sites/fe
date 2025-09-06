@@ -11,11 +11,11 @@ export const getFileNameWithoutExtension = (filename: string): string => {
 // Get file size in human readable format
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
@@ -55,12 +55,15 @@ export const isArchiveFile = (filename: string): boolean => {
 };
 
 // Generate unique filename
-export const generateUniqueFilename = (originalName: string, prefix: string = ''): string => {
+export const generateUniqueFilename = (
+  originalName: string,
+  prefix: string = ''
+): string => {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 8);
   const extension = getFileExtension(originalName);
   const nameWithoutExt = getFileNameWithoutExtension(originalName);
-  
+
   return `${prefix}${nameWithoutExt}_${timestamp}_${random}.${extension}`;
 };
 
@@ -76,48 +79,48 @@ export const sanitizeFilename = (filename: string): string => {
 export const getMimeType = (extension: string): string => {
   const mimeTypes: { [key: string]: string } = {
     // Images
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'gif': 'image/gif',
-    'webp': 'image/webp',
-    'bmp': 'image/bmp',
-    'svg': 'image/svg+xml',
-    
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    gif: 'image/gif',
+    webp: 'image/webp',
+    bmp: 'image/bmp',
+    svg: 'image/svg+xml',
+
     // Videos
-    'mp4': 'video/mp4',
-    'avi': 'video/x-msvideo',
-    'mov': 'video/quicktime',
-    'wmv': 'video/x-ms-wmv',
-    'flv': 'video/x-flv',
-    'webm': 'video/webm',
-    'mkv': 'video/x-matroska',
-    
+    mp4: 'video/mp4',
+    avi: 'video/x-msvideo',
+    mov: 'video/quicktime',
+    wmv: 'video/x-ms-wmv',
+    flv: 'video/x-flv',
+    webm: 'video/webm',
+    mkv: 'video/x-matroska',
+
     // Audio
-    'mp3': 'audio/mpeg',
-    'wav': 'audio/wav',
-    'ogg': 'audio/ogg',
-    'aac': 'audio/aac',
-    'flac': 'audio/flac',
-    'wma': 'audio/x-ms-wma',
-    
+    mp3: 'audio/mpeg',
+    wav: 'audio/wav',
+    ogg: 'audio/ogg',
+    aac: 'audio/aac',
+    flac: 'audio/flac',
+    wma: 'audio/x-ms-wma',
+
     // Documents
-    'pdf': 'application/pdf',
-    'doc': 'application/msword',
-    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'txt': 'text/plain',
-    'rtf': 'application/rtf',
-    'odt': 'application/vnd.oasis.opendocument.text',
-    
+    pdf: 'application/pdf',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    txt: 'text/plain',
+    rtf: 'application/rtf',
+    odt: 'application/vnd.oasis.opendocument.text',
+
     // Archives
-    'zip': 'application/zip',
-    'rar': 'application/x-rar-compressed',
+    zip: 'application/zip',
+    rar: 'application/x-rar-compressed',
     '7z': 'application/x-7z-compressed',
-    'tar': 'application/x-tar',
-    'gz': 'application/gzip',
-    'bz2': 'application/x-bzip2'
+    tar: 'application/x-tar',
+    gz: 'application/gzip',
+    bz2: 'application/x-bzip2',
   };
-  
+
   return mimeTypes[extension.toLowerCase()] || 'application/octet-stream';
 };
 
@@ -131,33 +134,33 @@ export const validateFileUpload = (
   } = {}
 ): { isValid: boolean; error?: string } => {
   const { maxSize, allowedTypes, allowedExtensions } = options;
-  
+
   // Check file size
   if (maxSize && file.size > maxSize) {
     return {
       isValid: false,
-      error: `File size exceeds maximum allowed size of ${formatFileSize(maxSize)}`
+      error: `File size exceeds maximum allowed size of ${formatFileSize(maxSize)}`,
     };
   }
-  
+
   // Check MIME type
   if (allowedTypes && !allowedTypes.includes(file.type)) {
     return {
       isValid: false,
-      error: `File type ${file.type} is not allowed`
+      error: `File type ${file.type} is not allowed`,
     };
   }
-  
+
   // Check file extension
   if (allowedExtensions) {
     const extension = getFileExtension(file.name);
     if (!allowedExtensions.includes(extension)) {
       return {
         isValid: false,
-        error: `File extension .${extension} is not allowed`
+        error: `File extension .${extension} is not allowed`,
       };
     }
   }
-  
+
   return { isValid: true };
 };

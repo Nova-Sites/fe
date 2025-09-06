@@ -18,8 +18,18 @@ interface ButtonProps {
 }
 
 const mapVariantToMui = (
-  variant: ButtonVariant,
-): { color: 'primary' | 'secondary' | 'error' | 'inherit' | 'success' | 'info' | 'warning'; muiVariant: 'text' | 'contained' | 'outlined' } => {
+  variant: ButtonVariant
+): {
+  color:
+    | 'primary'
+    | 'secondary'
+    | 'error'
+    | 'inherit'
+    | 'success'
+    | 'info'
+    | 'warning';
+  muiVariant: 'text' | 'contained' | 'outlined';
+} => {
   switch (variant) {
     case 'outline':
       return { color: 'primary', muiVariant: 'outlined' };
@@ -71,7 +81,9 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       type={type}
       disabled={disabled || loading}
-      startIcon={loading ? <CircularProgress size={18} color="inherit" /> : undefined}
+      startIcon={
+        loading ? <CircularProgress size={18} color='inherit' /> : undefined
+      }
     >
       {children}
     </MuiButton>

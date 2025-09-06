@@ -1,9 +1,16 @@
-import { fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import {
+  fetchBaseQuery,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/query/react';
 import { API_CONFIG, API_ROUTES, API_METHODS } from '@/constants';
 
 // Custom error response type
 export interface ApiErrorResponse {
   status: number;
+  error?: string;
+  message?: string;
   data: {
     success: false;
     message: string;
@@ -22,7 +29,7 @@ const baseQuery = fetchBaseQuery({
   //   // Backend set cookies với httpOnly: true, frontend không thể đọc được
   //   // Chỉ có thể sử dụng token từ localStorage/sessionStorage
   //   const accessToken = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
-    
+
   //   if (accessToken) {
   //     headers.set('Authorization', `Bearer ${accessToken}`);
   //   }
@@ -40,7 +47,7 @@ export const createBaseQuery = (): BaseQueryFn<
 > => {
   return async (args, api, extraOptions) => {
     const { contentType = 'json', ...fetchArgs } = args;
-    
+
     // Set content type header
     if (contentType === 'form-data') {
       // For form-data, don't set Content-Type header (browser will set it automatically)
@@ -53,7 +60,10 @@ export const createBaseQuery = (): BaseQueryFn<
         } catch {
           // If Headers constructor fails, create new headers object
           const newHeaders: Record<string, string> = {};
-          if (typeof fetchArgs.headers === 'object' && fetchArgs.headers !== null) {
+          if (
+            typeof fetchArgs.headers === 'object' &&
+            fetchArgs.headers !== null
+          ) {
             Object.entries(fetchArgs.headers).forEach(([key, value]) => {
               if (key !== 'Content-Type' && value !== undefined) {
                 newHeaders[key] = String(value);
@@ -72,8 +82,13 @@ export const createBaseQuery = (): BaseQueryFn<
           fetchArgs.headers = headers;
         } catch {
           // If Headers constructor fails, create new headers object
-          const newHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
-          if (typeof fetchArgs.headers === 'object' && fetchArgs.headers !== null) {
+          const newHeaders: Record<string, string> = {
+            'Content-Type': 'application/json',
+          };
+          if (
+            typeof fetchArgs.headers === 'object' &&
+            fetchArgs.headers !== null
+          ) {
             Object.entries(fetchArgs.headers).forEach(([key, value]) => {
               if (value !== undefined) {
                 newHeaders[key] = String(value);
@@ -88,37 +103,45 @@ export const createBaseQuery = (): BaseQueryFn<
     }
 
     // Execute the base query
-    let result = await baseQuery(fetchArgs, api, extraOptions);
+    const result = await baseQuery(fetchArgs, api, extraOptions);
 
     // Handle 401 errors (unauthorized) with refresh token logic
     if (result.error && result.error.status === 401) {
       const url = String(fetchArgs.url);
-      
+
       // Don't try refresh for auth-related endpoints to prevent infinite loops
-      if (!url.includes(API_ROUTES.AUTH.LOGIN) && !url.includes(API_ROUTES.AUTH.REGISTER) && !url.includes(API_ROUTES.AUTH.REFRESH_TOKEN)) {
-        
+      if (
+        !url.includes(API_ROUTES.AUTH.LOGIN) &&
+        !url.includes(API_ROUTES.AUTH.REGISTER) &&
+        !url.includes(API_ROUTES.AUTH.REFRESH_TOKEN)
+      ) {
         // Try to refresh token
-        if(!isRefreshing) {
+        if (!isRefreshing) {
           isRefreshing = true;
-          try {          
+          try {
             // Call refresh token endpoint - cookies sẽ được gửi tự động
-            const refreshResult = await baseQuery({
-              url: API_ROUTES.AUTH.REFRESH_TOKEN,
-              method: API_METHODS.POST,
-              credentials: 'include',
-            }, api, extraOptions);
-            
-            if (refreshResult.data) {            
+            const refreshResult = await baseQuery(
+              {
+                url: API_ROUTES.AUTH.REFRESH_TOKEN,
+                method: API_METHODS.POST,
+                credentials: 'include',
+              },
+              api,
+              extraOptions
+            );
+
+            if (refreshResult.data) {
               // Cập nhật token trong storage nếu refresh thành công
-              const newTokens = (refreshResult.data as any)?.data?.tokens;
+              const newTokens = (refreshResult.data as Record<string, unknown>)
+                ?.data?.tokens;
               if (newTokens?.accessToken) {
                 // localStorage.setItem('access_token', newTokens.accessToken);
                 console.log('🔄 Updated access token in storage after refresh');
               }
-              
+
               // // Retry the original request with new token
               // result = await baseQuery(fetchArgs, api, extraOptions);
-              
+
               // // If still 401 after refresh, then logout
               // if (result.error && result.error.status === 401) {
               //   await handleLogout();
@@ -131,13 +154,6 @@ export const createBaseQuery = (): BaseQueryFn<
             await handleLogout();
           }
         }
-      } else if (url.includes(API_ROUTES.USERS.PROFILE)) {
-        // For profile endpoint, just clear auth state without reload
-        console.log('Profile endpoint returned 401, clearing auth state...');
-        // Không gọi clearAuthState() để tránh reload
-        // Chỉ dispatch clearAuth action thông qua Redux
-        // Điều này sẽ được xử lý trong AuthContext
-        // Không làm gì cả - để AuthContext tự xử lý
       }
     }
 
@@ -151,7 +167,7 @@ export const createBaseQuery = (): BaseQueryFn<
         const validationMessages = Object.entries(error.data.errors)
           .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
           .join('; ');
-        
+
         error.data.message = `Validation failed: ${validationMessages}`;
       }
     }
@@ -176,7 +192,7 @@ const handleLogout = async () => {
 // Helper function to create form data from object
 export const createFormData = (data: Record<string, unknown>): FormData => {
   const formData = new FormData();
-  
+
   Object.entries(data).forEach(([key, value]) => {
     if (value !== null && value !== undefined) {
       if (value instanceof File) {
@@ -194,7 +210,7 @@ export const createFormData = (data: Record<string, unknown>): FormData => {
       }
     }
   });
-  
+
   return formData;
 };
 

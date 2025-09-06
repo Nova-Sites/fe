@@ -14,7 +14,10 @@ interface AlertProps {
   open?: boolean;
   onClose?: (event?: React.SyntheticEvent | Event, reason?: string) => void;
   autoHideDuration?: number;
-  anchorOrigin?: { vertical: 'top' | 'bottom'; horizontal: 'left' | 'center' | 'right' };
+  anchorOrigin?: {
+    vertical: 'top' | 'bottom';
+    horizontal: 'left' | 'center' | 'right';
+  };
   variant?: 'standard' | 'filled' | 'outlined';
 }
 
@@ -36,7 +39,17 @@ const Alert: React.FC<AlertProps> = ({
         autoHideDuration={autoHideDuration}
         anchorOrigin={anchorOrigin}
       >
-        <MuiAlert onClose={onClose as any} severity={severity} variant={variant} sx={{ width: '100%' }}>
+        <MuiAlert
+          onClose={
+            onClose as (
+              event?: React.SyntheticEvent | Event,
+              reason?: string
+            ) => void
+          }
+          severity={severity}
+          variant={variant}
+          sx={{ width: '100%' }}
+        >
           {children}
         </MuiAlert>
       </Snackbar>
@@ -44,12 +57,19 @@ const Alert: React.FC<AlertProps> = ({
   }
 
   return (
-    <MuiAlert severity={severity} variant={variant} onClose={onClose as any}>
+    <MuiAlert
+      severity={severity}
+      variant={variant}
+      onClose={
+        onClose as (
+          event?: React.SyntheticEvent | Event,
+          reason?: string
+        ) => void
+      }
+    >
       {children}
     </MuiAlert>
   );
 };
 
 export default Alert;
-
-

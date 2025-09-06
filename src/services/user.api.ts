@@ -7,7 +7,7 @@ export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: createBaseQuery(),
   tagTypes: ['User'],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getUsers: builder.query<ApiResponse<User[]>, void>({
       query: () => ({
         url: API_ROUTES.USERS.GET_ALL,
@@ -16,7 +16,10 @@ export const userApi = createApi({
       }),
       providesTags: ['User'],
     }),
-    updateUser: builder.mutation<ApiResponse<User>, { id: number; data: Partial<User> }>({
+    updateUser: builder.mutation<
+      ApiResponse<User>,
+      { id: number; data: Partial<User> }
+    >({
       query: ({ id, data }) => ({
         url: `${API_ROUTES.USERS.UPDATE_PROFILE}/${id}`,
         method: API_METHODS.PUT,
@@ -26,7 +29,7 @@ export const userApi = createApi({
       invalidatesTags: ['User'],
     }),
     deleteUser: builder.mutation<ApiResponse<null>, number>({
-      query: (id) => ({
+      query: id => ({
         url: `${API_ROUTES.USERS.DELETE}/${id}`,
         method: API_METHODS.DELETE,
         contentType: 'json',

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ButtonHTMLAttributes, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useRegisterMutation } from '@/services/auth.api';
@@ -6,10 +6,14 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { SignInPage } from '@toolpad/core/SignInPage';
 import { useTheme } from '@mui/material/styles';
 import { IconButton, Alert, Box } from '@mui/material';
-import { Button as CommonButton, Input as CommonInput } from '@/components/common';
+import {
+  Button as CommonButton,
+  Input as CommonInput,
+} from '@/components/common';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { ApiErrorResponse } from '@/services';
 
 const providers = [{ id: 'credentials', name: 'Email, Username and Password' }];
 
@@ -21,27 +25,33 @@ function EmailAndUsernameFields() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <CommonInput
-        id="email"
-        label="Email"
-        name="email"
-        type="email"
+        id='email'
+        label='Email'
+        name='email'
+        type='email'
         fullWidth
-        leftIcon={<AccountCircle fontSize="inherit" />}
+        leftIcon={<AccountCircle fontSize='inherit' />}
       />
       <CommonInput
-        id="username"
-        label="Username"
-        name="username"
+        id='username'
+        label='Username'
+        name='username'
         fullWidth
-        leftIcon={<AccountCircle fontSize="inherit" />}
+        leftIcon={<AccountCircle fontSize='inherit' />}
       />
     </Box>
   );
 }
 
-function SinglePasswordField({ id = 'password', label = 'Password' }: { id?: string; label?: string }) {
+function SinglePasswordField({
+  id = 'password',
+  label = 'Password',
+}: {
+  id?: string;
+  label?: string;
+}) {
   const [showPassword, setShowPassword] = React.useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => setShowPassword(show => !show);
   const handleMouseDownPassword = (event: React.MouseEvent) => {
     event.preventDefault();
   };
@@ -53,13 +63,17 @@ function SinglePasswordField({ id = 'password', label = 'Password' }: { id?: str
       fullWidth
       rightIcon={
         <IconButton
-          aria-label="toggle password visibility"
+          aria-label='toggle password visibility'
           onClick={handleClickShowPassword}
           onMouseDown={handleMouseDownPassword}
-          edge="end"
-          size="small"
+          edge='end'
+          size='small'
         >
-          {showPassword ? <VisibilityOff fontSize="inherit" /> : <Visibility fontSize="inherit" />}
+          {showPassword ? (
+            <VisibilityOff fontSize='inherit' />
+          ) : (
+            <Visibility fontSize='inherit' />
+          )}
         </IconButton>
       }
     />
@@ -69,21 +83,31 @@ function SinglePasswordField({ id = 'password', label = 'Password' }: { id?: str
 function PasswordAndConfirmFields() {
   return (
     <>
-      <SinglePasswordField id="password" label="Password" />
-      <SinglePasswordField id="confirm-password" label="Confirm Password" />
+      <SinglePasswordField id='password' label='Password' />
+      <SinglePasswordField id='confirm-password' label='Confirm Password' />
     </>
   );
 }
 
 function SubmitButton({ loading }: { loading?: boolean | null }) {
   return (
-    <CommonButton type="submit" variant="outline" size="md" fullWidth loading={Boolean(loading)} className='!mb-2 !mt-4'>
+    <CommonButton
+      type='submit'
+      variant='outline'
+      size='md'
+      fullWidth
+      loading={Boolean(loading)}
+      className='!mb-2 !mt-4'
+    >
       Create account
     </CommonButton>
   );
 }
 
-type SubtitleProps = { message?: string; severity?: 'error' | 'warning' | 'info' | 'success' };
+type SubtitleProps = {
+  message?: string;
+  severity?: 'error' | 'warning' | 'info' | 'success';
+};
 
 function Subtitle({ message, severity = 'warning' }: SubtitleProps) {
   return (
@@ -101,9 +125,10 @@ const RegisterPage: React.FC = () => {
   const [apiError, setApiError] = React.useState<string | null>(null);
 
   const extractErrorMessage = React.useCallback((err: unknown): string => {
-    const fallback = 'Registration failed. Please check your details and try again.';
+    const fallback =
+      'Registration failed. Please check your details and try again.';
     if (!err) return fallback;
-    const anyErr = err as any;
+    const anyErr = err as Partial<ApiErrorResponse>;
     return (
       anyErr?.data?.message ||
       anyErr?.error ||
@@ -150,13 +175,13 @@ const RegisterPage: React.FC = () => {
 
             registerMutation({ username, email, password })
               .unwrap()
-              .then((result) => {
+              .then(result => {
                 if (result.success) {
                   setApiError(null);
                   navigate('/login');
                 }
               })
-              .catch((err) => {
+              .catch(err => {
                 const msg = extractErrorMessage(err);
                 setApiError(msg);
                 console.error('Registration failed:', err);
@@ -170,22 +195,31 @@ const RegisterPage: React.FC = () => {
         slots={{
           title: Title,
           subtitle: () => (
-            <Subtitle message={apiError ?? undefined} severity={apiError ? 'error' : 'info'} />
+            <Subtitle
+              message={apiError ?? undefined}
+              severity={apiError ? 'error' : 'info'}
+            />
           ),
           emailField: EmailAndUsernameFields,
           passwordField: PasswordAndConfirmFields,
 
-          submitButton: (props: any) => <SubmitButton loading={isLoading} {...props} />,
+          submitButton: (props: ButtonHTMLAttributes<HTMLButtonElement>) => (
+            <SubmitButton loading={isLoading} {...props} />
+          ),
           signUpLink: () => (
             <div className='text-sm'>
-              Already have an account? <Link to="/login" className='ml-2 text-[#0288d1] underline'>
+              Already have an account?{' '}
+              <Link to='/login' className='ml-2 text-[#0288d1] underline'>
                 Sign in
               </Link>
             </div>
           ),
           // remove extra slots to keep field order clean
         }}
-        slotProps={{ form: { noValidate: true }, submitButton: { loading: isLoading } }}
+        slotProps={{
+          form: { noValidate: true },
+          submitButton: { loading: isLoading },
+        }}
         providers={providers}
       />
     </AppProvider>

@@ -21,16 +21,24 @@ const textSizeSx = {
   lg: { fontSize: 16 },
 } as const;
 
-const Loading: React.FC<LoadingProps> = ({ 
-  size = 'md', 
-  text = 'Loading...', 
-  className = '' 
+const Loading: React.FC<LoadingProps> = ({
+  size = 'md',
+  text = 'Loading...',
+  className = '',
 }) => {
   return (
-    <Box className={className} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Box
+      className={className}
+      display='flex'
+      flexDirection='column'
+      alignItems='center'
+      justifyContent='center'
+    >
       <CircularProgress size={sizeToPx[size]} />
       {text && (
-        <Typography sx={{ mt: 1, color: 'text.secondary', ...textSizeSx[size] }}>
+        <Typography
+          sx={{ mt: 1, color: 'text.secondary', ...textSizeSx[size] }}
+        >
           {text}
         </Typography>
       )}

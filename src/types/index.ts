@@ -1,11 +1,11 @@
-import { USER_ROLES, ROUTE_GUARDS } from "@/constants";
-import { ReactNode } from "react";
+import { USER_ROLES, ROUTE_GUARDS } from '@/constants';
+import { ReactNode } from 'react';
 
 // Derive literal union from USER_ROLES constant
-export type UserRole = typeof USER_ROLES[keyof typeof USER_ROLES];
+export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
 // Derive literal union from ROUTE_GUARDS constant
-export type RouteGuardType = typeof ROUTE_GUARDS[keyof typeof ROUTE_GUARDS];
+export type RouteGuardType = (typeof ROUTE_GUARDS)[keyof typeof ROUTE_GUARDS];
 
 // User Types
 export interface User {
@@ -126,7 +126,14 @@ export interface TableColumn<T> {
 export interface FormField {
   name: string;
   label: string;
-  type: 'text' | 'email' | 'password' | 'number' | 'textarea' | 'select' | 'file';
+  type:
+    | 'text'
+    | 'email'
+    | 'password'
+    | 'number'
+    | 'textarea'
+    | 'select'
+    | 'file';
   required?: boolean;
   options?: { value: string | number; label: string }[];
   validation?: {
@@ -164,7 +171,7 @@ export interface RouteConfig {
 // Route access context
 export interface RouteAccessContext {
   isAuthenticated: boolean;
-  user: any;
+  user: unknown;
   currentPath: string;
 }
 
@@ -174,4 +181,3 @@ export interface RouteAccessResult {
   redirectComponent?: React.ReactElement;
   reason?: string;
 }
-

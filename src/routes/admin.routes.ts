@@ -5,7 +5,9 @@ import { AdminLayout } from '@/components/layouts';
 
 const AdminDashboard = lazy(() => import('@/pages/Admin/AdminDashboard'));
 const AdminProductsPage = lazy(() => import('@/pages/Admin/AdminProductsPage'));
-const AdminCategoriesPage = lazy(() => import('@/pages/Admin/AdminCategoriesPage'));
+const AdminCategoriesPage = lazy(
+  () => import('@/pages/Admin/AdminCategoriesPage')
+);
 const AdminOrdersPage = lazy(() => import('@/pages/Admin/AdminOrdersPage'));
 
 export const adminRoutes: RouteObject[] = [

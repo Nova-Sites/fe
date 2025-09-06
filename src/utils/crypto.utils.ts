@@ -1,6 +1,7 @@
 // Generate random string
 export const generateRandomCryptoString = (length: number = 32): string => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -9,15 +10,18 @@ export const generateRandomCryptoString = (length: number = 32): string => {
 };
 
 // Generate random number
-export const generateRandomNumber = (min: number = 0, max: number = 100): number => {
+export const generateRandomNumber = (
+  min: number = 0,
+  max: number = 100
+): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 // Generate UUID v4
 export const generateUUID = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -26,13 +30,13 @@ export const generateUUID = (): string => {
 export const simpleHash = (str: string): string => {
   let hash = 0;
   if (str.length === 0) return hash.toString();
-  
+
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
-  
+
   return Math.abs(hash).toString(36);
 };
 
@@ -54,18 +58,22 @@ export const generateAPIKey = (prefix: string = 'api'): string => {
 export const hashPassword = (password: string, salt: string = ''): string => {
   const saltedPassword = password + salt;
   let hash = 0;
-  
+
   for (let i = 0; i < saltedPassword.length; i++) {
     const char = saltedPassword.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
-  
+
   return Math.abs(hash).toString(36);
 };
 
 // Verify password
-export const verifyPassword = (password: string, hash: string, salt: string = ''): boolean => {
+export const verifyPassword = (
+  password: string,
+  hash: string,
+  salt: string = ''
+): boolean => {
   return hashPassword(password, salt) === hash;
 };
 

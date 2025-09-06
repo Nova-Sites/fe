@@ -2,10 +2,7 @@ import React, { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Loading } from '@/components/common';
-import { 
-  checkRouteAccess, 
-  getRouteConfig
-} from './route.utils';
+import { checkRouteAccess, getRouteConfig } from './route.utils';
 
 interface RouteGuardProps {
   children: ReactNode;
@@ -16,16 +13,16 @@ interface RouteGuardProps {
 export const RouteGuard: React.FC<RouteGuardProps> = ({
   children,
   routePath,
-  fallback
+  fallback,
 }) => {
   const location = useLocation();
   const { user, isAuthenticated, isLoading } = useAuthContext();
   // Use provided routePath or current location
   const currentPath = routePath || location.pathname;
-  
+
   // Get route configuration
   const routeConfig = getRouteConfig(currentPath);
-  
+
   // If route requires auth or role checks, block redirect while auth is initializing
   if (routeConfig.requireAuth && isLoading) {
     return <>{fallback || <Loading />}</>;
@@ -35,19 +32,19 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
   const accessResult = checkRouteAccess(routeConfig, {
     isAuthenticated,
     user,
-    currentPath
+    currentPath,
   });
-  
+
   // If access denied, show fallback or redirect
   if (!accessResult.hasAccess) {
     if (fallback) {
       return <>{fallback}</>;
     }
-    
+
     // Use default redirect logic
     return accessResult.redirectComponent || <>{children}</>;
   }
-  
+
   // Access granted, render children
   return <>{children}</>;
 };

@@ -72,7 +72,8 @@ export const ERROR_MESSAGES = {
   INVALID_EMAIL: 'Please enter a valid email address',
   PASSWORD_TOO_SHORT: `Password must be at least ${VALIDATION.PASSWORD.MIN_LENGTH} characters`,
   USERNAME_TOO_SHORT: `Username must be at least ${VALIDATION.USERNAME.MIN_LENGTH} characters`,
-  USERNAME_INVALID: 'Username can only contain letters, numbers, and underscores',
+  USERNAME_INVALID:
+    'Username can only contain letters, numbers, and underscores',
   NETWORK_ERROR: 'Network error. Please check your connection.',
   UNAUTHORIZED: 'You are not authorized to perform this action',
   NOT_FOUND: 'The requested resource was not found',

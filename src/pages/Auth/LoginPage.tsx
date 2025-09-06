@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Checkbox, FormControlLabel, Alert ,IconButton } from '@mui/material';
+import { Checkbox, FormControlLabel, Alert, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
@@ -9,20 +9,24 @@ import { SignInPage } from '@toolpad/core/SignInPage';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { Button as CommonButton, Input as CommonInput } from '@/components/common';
+import {
+  Button as CommonButton,
+  Input as CommonInput,
+} from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
+import type { ApiErrorResponse } from '@/services/api.config';
 
 const providers = [{ id: 'credentials', name: 'Email and Password' }];
 
 function CustomEmailField() {
   return (
     <CommonInput
-      label="Email"
-      id="email"
-      name="email"
-      type="email"
+      label='Email'
+      id='email'
+      name='email'
+      type='email'
       fullWidth
-      leftIcon={<AccountCircle fontSize="inherit" />}
+      leftIcon={<AccountCircle fontSize='inherit' />}
     />
   );
 }
@@ -30,7 +34,7 @@ function CustomEmailField() {
 function CustomPasswordField() {
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => setShowPassword(show => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -38,20 +42,24 @@ function CustomPasswordField() {
 
   return (
     <CommonInput
-      label="Password"
-      id="password"
-      name="password"
+      label='Password'
+      id='password'
+      name='password'
       type={showPassword ? 'text' : 'password'}
       fullWidth
       rightIcon={
         <IconButton
-          aria-label="toggle password visibility"
+          aria-label='toggle password visibility'
           onClick={handleClickShowPassword}
           onMouseDown={handleMouseDownPassword}
-          edge="end"
-          size="small"
+          edge='end'
+          size='small'
         >
-          {showPassword ? <VisibilityOff fontSize="inherit" /> : <Visibility fontSize="inherit" />}
+          {showPassword ? (
+            <VisibilityOff fontSize='inherit' />
+          ) : (
+            <Visibility fontSize='inherit' />
+          )}
         </IconButton>
       }
     />
@@ -60,7 +68,14 @@ function CustomPasswordField() {
 
 function CustomButton({ loading }: { loading?: boolean | null }) {
   return (
-    <CommonButton type="submit" variant="outline" size="md" fullWidth loading={Boolean(loading)} className='!my-2'>
+    <CommonButton
+      type='submit'
+      variant='outline'
+      size='md'
+      fullWidth
+      loading={Boolean(loading)}
+      className='!my-2'
+    >
       Log In
     </CommonButton>
   );
@@ -68,7 +83,7 @@ function CustomButton({ loading }: { loading?: boolean | null }) {
 
 function SignUpLink() {
   return (
-    <Link to="/register" className='text-[#0288d1] text-sm underline'>
+    <Link to='/register' className='text-[#0288d1] text-sm underline'>
       Sign up
     </Link>
   );
@@ -76,7 +91,7 @@ function SignUpLink() {
 
 function ForgotPasswordLink() {
   return (
-    <Link to="/" className='text-[#0288d1] text-sm'>
+    <Link to='/' className='text-[#0288d1] text-sm'>
       Forgot password?
     </Link>
   );
@@ -86,8 +101,10 @@ function Title() {
   return <h2 style={{ marginBottom: 8 }}>Login</h2>;
 }
 
-
-type SubtitleProps = { message?: string; severity?: 'error' | 'warning' | 'info' | 'success' };
+type SubtitleProps = {
+  message?: string;
+  severity?: 'error' | 'warning' | 'info' | 'success';
+};
 
 function Subtitle({ message, severity = 'warning' }: SubtitleProps) {
   return (
@@ -97,17 +114,16 @@ function Subtitle({ message, severity = 'warning' }: SubtitleProps) {
   );
 }
 
-
 function RememberMeCheckbox() {
   const theme = useTheme();
   return (
     <FormControlLabel
-      label="Remember me"
+      label='Remember me'
       control={
         <Checkbox
-          name="remember"
-          value="true"
-          color="primary"
+          name='remember'
+          value='true'
+          color='primary'
           sx={{ padding: 0.5, '& .MuiSvgIcon-root': { fontSize: 20 } }}
         />
       }
@@ -128,12 +144,11 @@ export default function SlotsSignIn() {
   const { isAuthenticated } = useAuthContext();
   const [apiError, setApiError] = React.useState<string | null>(null);
 
-
-
   const extractErrorMessage = React.useCallback((err: unknown): string => {
-    const fallback = 'Login failed. Please check your credentials and try again.';
+    const fallback =
+      'Login failed. Please check your credentials and try again.';
     if (!err) return fallback;
-    const anyErr = err as any;
+    const anyErr = err as Partial<ApiErrorResponse>;
     return (
       anyErr?.data?.message ||
       anyErr?.error ||
@@ -143,12 +158,15 @@ export default function SlotsSignIn() {
     );
   }, []);
 
-
   React.useEffect(() => {
     if (isAuthenticated) {
-      isAdmin ? navigate('/admin') : navigate('/');
+      if (isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, isAdmin]);
 
   if (isAuthenticated) {
     return null;
@@ -162,8 +180,9 @@ export default function SlotsSignIn() {
             const email = formData?.get('email') as string;
             const password = formData?.get('password') as string;
             const result = await login({ email, password });
-            if (!result.success && result.error) setApiError(extractErrorMessage(result.error));
-            return { status: 'success' }
+            if (!result.success && result.error)
+              setApiError(extractErrorMessage(result.error));
+            return { status: 'success' };
           } catch (err) {
             console.error('Login failed:', err);
             return {

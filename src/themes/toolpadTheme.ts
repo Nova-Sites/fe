@@ -17,5 +17,3 @@ const toolpadTheme = createTheme({
 });
 
 export default toolpadTheme;
-
-

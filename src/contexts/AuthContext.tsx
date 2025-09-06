@@ -1,11 +1,17 @@
-import React, { createContext, useContext, useEffect, useRef, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useMemo,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { setUser, setAuthenticated, clearAuth } from '@/store/slices/authSlice';
 import { useGetProfileQuery } from '@/services/auth.api';
 
 interface AuthContextType {
-  user: any;
+  user: unknown;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -26,27 +32,29 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
-  
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
+
   // Ref để track nếu đã thử fetch profile
   const hasAttemptedProfileFetch = useRef(false);
   const isInitialized = useRef(false);
-  
+
   // Sử dụng useMemo để tránh tính toán lại mỗi lần render
   const shouldFetchProfile = useMemo(() => {
     // Nếu đã có user, không cần fetch profile
     if (user) {
       return false;
     }
-    
+
     // Chỉ fetch profile một lần khi mount và chưa có user
     return !hasAttemptedProfileFetch.current && !isInitialized.current;
   }, [user]);
-  
-  const { 
-    data: profileData, 
-    isLoading: isProfileLoading, 
-    error: profileError 
+
+  const {
+    data: profileData,
+    isLoading: isProfileLoading,
+    error: profileError,
   } = useGetProfileQuery(undefined, {
     skip: !shouldFetchProfile,
     refetchOnMountOrArgChange: false,
@@ -87,12 +95,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated,
     // Keep loading true until we have definitively attempted profile fetch
     // and resolved the auth state. This avoids guard redirects during init.
-    isLoading: user ? false : (isProfileLoading || !hasAttemptedProfileFetch.current),
+    isLoading: user
+      ? false
+      : isProfileLoading || !hasAttemptedProfileFetch.current,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

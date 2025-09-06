@@ -77,7 +77,7 @@ import { RoleGuard } from '@/middlewares';
 </RoleGuard>
 
 // Custom fallback
-<RoleGuard 
+<RoleGuard
   requiredRoles={['ROLE_SUPER_ADMIN']}
   fallback={<InsufficientPermissions />}
 >
@@ -95,7 +95,7 @@ import { LoadingGuard } from '@/middlewares';
 </LoadingGuard>
 
 // Custom loading time và fallback
-<LoadingGuard 
+<LoadingGuard
   isLoading={isLoading}
   minLoadingTime={500}
   fallback={<CustomSpinner />}
@@ -114,7 +114,7 @@ import { ErrorBoundary } from '@/middlewares';
 </ErrorBoundary>
 
 // Custom error handling
-<ErrorBoundary 
+<ErrorBoundary
   onError={(error, errorInfo) => {
     console.error('Custom error handling:', error);
     // Gửi error đến logging service
@@ -134,17 +134,17 @@ const validationRules = [
   createValidationRules.email(),
   createValidationRules.password(8),
   createValidationRules.required('name'),
-  createValidationRules.minLength('description', 10)
+  createValidationRules.minLength('description', 10),
 ];
 
-<ValidationGuard 
+<ValidationGuard
   data={formData}
   rules={validationRules}
-  onValidationError={(errors) => setErrors(errors)}
+  onValidationError={errors => setErrors(errors)}
   showErrors={true}
 >
   <FormComponent />
-</ValidationGuard>
+</ValidationGuard>;
 ```
 
 ## 🔧 Route Configuration
@@ -160,7 +160,7 @@ const newRoute: RouteConfig = {
   type: 'admin',
   requireAuth: true,
   requiredRoles: ['ROLE_ADMIN'],
-  redirectTo: '/login'
+  redirectTo: '/login',
 };
 
 registerRoute(newRoute);
@@ -176,13 +176,17 @@ const customRouteGuard = createRouteGuard([
     path: '/custom-route',
     type: 'user',
     requireAuth: true,
-    redirectTo: '/custom-login'
-  }
+    redirectTo: '/custom-login',
+  },
 ]);
 
 // Sử dụng
 const routeConfig = customRouteGuard.getRouteConfig('/custom-route');
-const canAccess = customRouteGuard.canUserAccessRoute('/custom-route', user, isAuthenticated);
+const canAccess = customRouteGuard.canUserAccessRoute(
+  '/custom-route',
+  user,
+  isAuthenticated
+);
 ```
 
 ## 🎯 Validation Rules
@@ -195,25 +199,29 @@ import { createValidationRules } from '@/middlewares';
 const rules = [
   // Email validation
   createValidationRules.email(),
-  
+
   // Password validation
   createValidationRules.password(10),
-  
+
   // Phone validation
   createValidationRules.phone(),
-  
+
   // URL validation
   createValidationRules.url(),
-  
+
   // Required field
   createValidationRules.required('username'),
-  
+
   // Length validation
   createValidationRules.minLength('description', 20),
   createValidationRules.maxLength('title', 100),
-  
+
   // Pattern validation
-  createValidationRules.pattern('slug', /^[a-z0-9-]+$/, 'Slug must contain only lowercase letters, numbers, and hyphens')
+  createValidationRules.pattern(
+    'slug',
+    /^[a-z0-9-]+$/,
+    'Slug must contain only lowercase letters, numbers, and hyphens'
+  ),
 ];
 ```
 
@@ -224,7 +232,7 @@ const customRule = {
   field: 'age',
   required: true,
   custom: (value: any) => value >= 18,
-  message: 'User must be at least 18 years old'
+  message: 'User must be at least 18 years old',
 };
 ```
 
@@ -236,17 +244,17 @@ const customRule = {
 import { createMiddlewareChain } from '@/middlewares';
 
 const middlewareChain = createMiddlewareChain(
-  async (context) => {
+  async context => {
     // Middleware 1: Check authentication
     if (!context.isAuthenticated) return false;
     return true;
   },
-  async (context) => {
+  async context => {
     // Middleware 2: Check permissions
     if (!context.user.hasPermission('read')) return false;
     return true;
   },
-  async (context) => {
+  async context => {
     // Middleware 3: Validate data
     if (!context.data.isValid) return false;
     return true;
@@ -277,13 +285,13 @@ function App() {
       <Router>
         <Routes>
           {/* Routes được bảo vệ bởi RouteGuard */}
-          <Route 
-            path="/admin" 
+          <Route
+            path='/admin'
             element={
               <RouteGuard>
                 <AdminDashboard />
               </RouteGuard>
-            } 
+            }
           />
         </Routes>
       </Router>
@@ -299,7 +307,7 @@ import { AuthGuard, RoleGuard, LoadingGuard } from '@/middlewares';
 
 function AdminPage() {
   const { data, isLoading } = useQuery();
-  
+
   return (
     <AuthGuard>
       <RoleGuard requiredRoles={['ROLE_ADMIN']}>
@@ -318,31 +326,28 @@ function AdminPage() {
 
 ```tsx
 const CustomAccessDenied = () => (
-  <div className="access-denied">
+  <div className='access-denied'>
     <h2>Access Denied</h2>
     <p>You don't have permission to access this page.</p>
   </div>
 );
 
-<RoleGuard 
-  requiredRoles={['ROLE_ADMIN']}
-  fallback={<CustomAccessDenied />}
->
+<RoleGuard requiredRoles={['ROLE_ADMIN']} fallback={<CustomAccessDenied />}>
   <AdminComponent />
-</RoleGuard>
+</RoleGuard>;
 ```
 
 ### Custom error handling
 
 ```tsx
-<ErrorBoundary 
+<ErrorBoundary
   onError={(error, errorInfo) => {
     // Log error
     console.error('Error occurred:', error);
-    
+
     // Send to monitoring service
     monitoringService.captureException(error);
-    
+
     // Show user-friendly message
     toast.error('Something went wrong. Please try again.');
   }}
