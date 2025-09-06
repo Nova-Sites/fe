@@ -30,6 +30,8 @@ const baseQuery = fetchBaseQuery({
   // },
 });
 
+let isRefreshing = false;
+
 // Enhanced base query with error handling, content-type support, and refresh token logic
 export const createBaseQuery = (): BaseQueryFn<
   FetchArgs & { contentType?: ContentType },
@@ -96,35 +98,38 @@ export const createBaseQuery = (): BaseQueryFn<
       if (!url.includes(API_ROUTES.AUTH.LOGIN) && !url.includes(API_ROUTES.AUTH.REGISTER) && !url.includes(API_ROUTES.AUTH.REFRESH_TOKEN)) {
         
         // Try to refresh token
-        try {          
-          // Call refresh token endpoint - cookies sẽ được gửi tự động
-          const refreshResult = await baseQuery({
-            url: API_ROUTES.AUTH.REFRESH_TOKEN,
-            method: API_METHODS.POST,
-            credentials: 'include',
-          }, api, extraOptions);
-          
-          if (refreshResult.data) {            
-            // Cập nhật token trong storage nếu refresh thành công
-            const newTokens = (refreshResult.data as any)?.data?.tokens;
-            if (newTokens?.accessToken) {
-              // localStorage.setItem('access_token', newTokens.accessToken);
-              console.log('🔄 Updated access token in storage after refresh');
-            }
+        if(!isRefreshing) {
+          isRefreshing = true;
+          try {          
+            // Call refresh token endpoint - cookies sẽ được gửi tự động
+            const refreshResult = await baseQuery({
+              url: API_ROUTES.AUTH.REFRESH_TOKEN,
+              method: API_METHODS.POST,
+              credentials: 'include',
+            }, api, extraOptions);
             
-            // Retry the original request with new token
-            result = await baseQuery(fetchArgs, api, extraOptions);
-            
-            // If still 401 after refresh, then logout
-            if (result.error && result.error.status === 401) {
+            if (refreshResult.data) {            
+              // Cập nhật token trong storage nếu refresh thành công
+              const newTokens = (refreshResult.data as any)?.data?.tokens;
+              if (newTokens?.accessToken) {
+                // localStorage.setItem('access_token', newTokens.accessToken);
+                console.log('🔄 Updated access token in storage after refresh');
+              }
+              
+              // // Retry the original request with new token
+              // result = await baseQuery(fetchArgs, api, extraOptions);
+              
+              // // If still 401 after refresh, then logout
+              // if (result.error && result.error.status === 401) {
+              //   await handleLogout();
+              // }
+            } else {
               await handleLogout();
             }
-          } else {
+          } catch (refreshError) {
+            console.error('Error during token refresh:', refreshError);
             await handleLogout();
           }
-        } catch (refreshError) {
-          console.error('Error during token refresh:', refreshError);
-          await handleLogout();
         }
       } else if (url.includes(API_ROUTES.USERS.PROFILE)) {
         // For profile endpoint, just clear auth state without reload

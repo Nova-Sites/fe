@@ -1,4 +1,7 @@
 import Box from '@mui/material/Box';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
 //
 import toolpadTheme from '@/themes/toolpadTheme';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -9,7 +12,8 @@ import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider, type Navigation, type Router } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import * as React from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 const NAVIGATION: Navigation = [
   {
@@ -60,6 +64,31 @@ const NAVIGATION: Navigation = [
     title: 'Orders',
     icon: <ShoppingCartIcon />,
   },
+  {
+    kind: 'divider',
+  },
+  {
+    kind: 'header',
+    title: 'Account',
+  },
+  {
+    segment: 'profile',
+    title: 'Profile',
+    icon: <PersonIcon />,
+  },
+  {
+    segment: 'settings',
+    title: 'Settings',
+    icon: <SettingsIcon />,
+  },
+  {
+    kind: 'divider',
+  },
+  {
+    segment: 'logout',
+    title: 'Logout',
+    icon: <LogoutIcon />,
+  },
 ];
 
 const demoTheme = toolpadTheme;
@@ -67,6 +96,7 @@ const demoTheme = toolpadTheme;
 export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
 
   const pathnameRelativeToAdmin = React.useMemo(() => {
     if (location.pathname.startsWith('/admin')) {
@@ -82,9 +112,14 @@ export default function AdminLayout() {
       searchParams: new URLSearchParams(location.search),
       navigate: (url: string | URL) => {
         const rawPath = typeof url === 'string' ? url : url.pathname;
-
+  
+        if (rawPath === '/logout') {
+          logout();
+          return;
+        }
+  
         let resolved: string;
-
+  
         if (!rawPath || rawPath === '/') {
           resolved = '/';
         } else if (rawPath.startsWith('/admin')) {
@@ -92,7 +127,7 @@ export default function AdminLayout() {
         } else {
           resolved = `/admin${rawPath.startsWith('/') ? '' : '/'}${rawPath}`;
         }
-
+  
         navigate(resolved);
       },
     }),
@@ -106,13 +141,11 @@ export default function AdminLayout() {
       theme={demoTheme}
       branding={{
         logo: (
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center' }}>
             <img
               src="https://cdn.pixabay.com/photo/2023/10/16/06/10/website-8318520_1280.png"
               alt="Logo"
               style={{ width: 32, height: 32 }}
             />
-          </Link>
         ),
         title: 'Admin Panel',
       }}

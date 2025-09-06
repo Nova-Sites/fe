@@ -1,11 +1,9 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Button } from '@/components/common';
 import { USER_ROLES } from '@/constants';
-import { useLogoutMutation } from '@/services'
-import { useDispatch } from 'react-redux';
-import { clearAuth } from '@/store/slices/authSlice';
+import { useAuth } from '@/hooks';
 
 
 interface UserLayoutProps {
@@ -13,21 +11,8 @@ interface UserLayoutProps {
 }
 
 const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
   const { user, isAuthenticated } = useAuthContext();
-  const [logout] = useLogoutMutation()
-  const dispatch = useDispatch();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      dispatch(clearAuth());
-    } catch (error) {
-      console.error(error)
-    } finally {
-      navigate('/login');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -62,7 +47,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
                       Admin
                     </Link>
                   ) : null}
-                  <Button variant="outline" size="sm" onClick={handleLogout}>
+                  <Button variant="outline" size="sm" onClick={logout}>
                     Logout
                   </Button>
                 </>
