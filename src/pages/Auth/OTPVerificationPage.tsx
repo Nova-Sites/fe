@@ -1,17 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Typography,
-  TextField,
   Button,
   Alert,
   CircularProgress,
   IconButton,
 } from '@mui/material';
 import { ArrowBack, Refresh } from '@mui/icons-material';
+import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useAuth } from '@/hooks';
 import { Button as CommonButton } from '@/components/common';
 
@@ -29,16 +29,13 @@ const OTPVerificationPage: React.FC = () => {
 
   const state = location.state as LocationState;
   const email = state?.email || '';
-  // const username = state?.username || '';
   const from = state?.from || '/';
 
-  const [otp, setOtp] = useState<string[]>(new Array(6).fill(''));
+  const [otp, setOtp] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isResending, setIsResending] = useState(false);
   const [countdown, setCountdown] = useState(0);
-
-  const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Countdown timer for resend button
   useEffect(() => {
@@ -53,57 +50,26 @@ const OTPVerificationPage: React.FC = () => {
     setCountdown(60); // 60 seconds countdown
   }, []);
 
-  const handleOtpChange = (index: number, value: string) => {
-    // Only allow single digit
-    if (value.length > 1) return;
-
-    // Only allow numbers
-    if (value && !/^\d$/.test(value)) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // Auto focus next input
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
     // Clear error when user starts typing
     if (error) setError(null);
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    // Handle backspace
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-
-    // Handle paste
-    if (e.key === 'v' && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      navigator.clipboard.readText().then(text => {
-        const pastedOtp = text.replace(/\D/g, '').slice(0, 6);
-        if (pastedOtp.length === 6) {
-          const newOtp = pastedOtp.split('');
-          setOtp(newOtp);
-          inputRefs.current[5]?.focus();
-        }
-      });
-    }
+  // Function to clear all OTP fields
+  const clearAllOtp = () => {
+    setOtp('');
   };
 
   const handleVerify = async () => {
-    const otpString = otp.join('');
-
-    if (otpString.length !== 6) {
+    if (otp.length !== 6) {
       setError('Please enter all 6 digits');
       return;
     }
 
     try {
       setError(null);
-      const result = await verifyOTP(otpString);
+      const result = await verifyOTP(otp);
 
       if (result.success) {
         setSuccess('Email verified successfully!');
@@ -130,8 +96,7 @@ const OTPVerificationPage: React.FC = () => {
       if (result.success) {
         setSuccess('OTP sent successfully!');
         setCountdown(60); // Reset countdown
-        setOtp(new Array(6).fill('')); // Clear OTP inputs
-        inputRefs.current[0]?.focus(); // Focus first input
+        setOtp(''); // Clear OTP input
       } else {
         setError(result.error || 'Failed to resend OTP. Please try again.');
       }
@@ -205,36 +170,16 @@ const OTPVerificationPage: React.FC = () => {
           )}
 
           {/* OTP Input */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: 1,
-              mb: 3,
-            }}
-          >
-            {otp.map((digit, index) => (
-              <TextField
-                key={index}
-                ref={el => {
-                  inputRefs.current[index] = el;
-                }}
-                value={digit}
-                onChange={e => handleOtpChange(index, e.target.value)}
-                onKeyDown={e => handleKeyDown(index, e)}
-                inputProps={{
-                  maxLength: 1,
-                  style: {
-                    textAlign: 'center',
-                    fontSize: '1.5rem',
-                    fontWeight: 'bold',
-                  },
-                }}
-                sx={{
-                  width: 50,
+          <Box sx={{ mb: 3 }}>
+            <MuiOtpInput
+              value={otp}
+              onChange={handleOtpChange}
+              length={6}
+              sx={{
+                '& .MuiOtpInput-TextField': {
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: digit ? 'primary.main' : 'grey.300',
+                      borderColor: 'grey.300',
                     },
                     '&:hover fieldset': {
                       borderColor: 'primary.main',
@@ -244,15 +189,15 @@ const OTPVerificationPage: React.FC = () => {
                       borderWidth: 2,
                     },
                   },
-                }}
-              />
-            ))}
+                },
+              }}
+            />
           </Box>
 
           {/* Verify Button */}
           <CommonButton
             onClick={handleVerify}
-            disabled={isLoading || otp.join('').length !== 6}
+            disabled={isLoading || otp.length !== 6}
             loading={isLoading}
             fullWidth
             size='lg'
@@ -260,6 +205,22 @@ const OTPVerificationPage: React.FC = () => {
           >
             Verify Email
           </CommonButton>
+
+          {/* Clear All Button */}
+          {otp.length > 0 && (
+            <Button
+              onClick={clearAllOtp}
+              variant='text'
+              size='small'
+              sx={{
+                textTransform: 'none',
+                color: 'text.secondary',
+                mb: 2,
+              }}
+            >
+              Clear All
+            </Button>
+          )}
 
           {/* Resend Section */}
           <Box sx={{ textAlign: 'center' }}>

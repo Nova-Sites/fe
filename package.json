@@ -23,6 +23,7 @@
     "@tailwindcss/vite": "^4.1.12",
     "@toolpad/core": "^0.16.0",
     "axios": "^1.11.0",
+    "mui-one-time-password-input": "^5.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",
