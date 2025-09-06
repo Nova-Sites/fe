@@ -82,11 +82,11 @@ export const sanitizeObject = <T extends Record<string, unknown>>(
         sanitized[key as keyof T] = sanitizeText(value) as T[keyof T];
       } else if (typeof value === 'object' && value !== null) {
         sanitized[key as keyof T] = sanitizeObject(
-          value,
+          value as Record<string, unknown>,
           allowedKeys
         ) as T[keyof T];
       } else {
-        sanitized[key as keyof T] = value;
+        sanitized[key as keyof T] = value as T[keyof T];
       }
     }
   }

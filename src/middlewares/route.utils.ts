@@ -131,16 +131,18 @@ export const checkRouteAccess = (
 
   // Check role requirements
   if (routeConfig.requiredRoles && user) {
+    const userWithRole = user as { role?: string };
     const hasRequiredRole = routeConfig.requiredRoles.some(role => {
       if (role === USER_ROLES.ADMIN) {
         return (
-          user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.SUPER_ADMIN
+          userWithRole.role === USER_ROLES.ADMIN ||
+          userWithRole.role === USER_ROLES.SUPER_ADMIN
         );
       }
       if (role === USER_ROLES.SUPER_ADMIN) {
-        return user.role === USER_ROLES.SUPER_ADMIN;
+        return userWithRole.role === USER_ROLES.SUPER_ADMIN;
       }
-      return user.role === role;
+      return userWithRole.role === role;
     });
 
     if (!hasRequiredRole) {

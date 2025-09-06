@@ -50,8 +50,9 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
                   >
                     Profile
                   </Link>
-                  {user?.role === USER_ROLES.ADMIN ||
-                  user?.role === USER_ROLES.SUPER_ADMIN ? (
+                  {(user as { role?: string })?.role === USER_ROLES.ADMIN ||
+                  (user as { role?: string })?.role ===
+                    USER_ROLES.SUPER_ADMIN ? (
                     <Link
                       to='/admin'
                       className='text-gray-700 hover:text-blue-600'

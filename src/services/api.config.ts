@@ -133,8 +133,8 @@ export const createBaseQuery = (): BaseQueryFn<
             if (refreshResult.data) {
               // Cập nhật token trong storage nếu refresh thành công
               const newTokens = (refreshResult.data as Record<string, unknown>)
-                ?.data?.tokens;
-              if (newTokens?.accessToken) {
+                ?.data as { tokens?: { accessToken?: string } };
+              if (newTokens?.tokens?.accessToken) {
                 // localStorage.setItem('access_token', newTokens.accessToken);
                 console.log('🔄 Updated access token in storage after refresh');
               }
