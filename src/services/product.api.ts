@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { ApiResponse, Product, ProductFilters, PaginatedResponse } from '@/types';
+import type {
+  ApiResponse,
+  Product,
+  ProductFilters,
+  PaginatedResponse,
+} from '@/types';
 import { API_ROUTES, API_METHODS } from '@/constants';
 import { createBaseQuery } from './api.config';
 
@@ -7,9 +12,9 @@ export const productApi = createApi({
   reducerPath: 'productApi',
   baseQuery: createBaseQuery(),
   tagTypes: ['Product'],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getProducts: builder.query<PaginatedResponse<Product>, ProductFilters>({
-      query: (filters) => ({
+      query: filters => ({
         url: API_ROUTES.PRODUCTS.GET_ALL,
         method: API_METHODS.GET,
         params: filters,
@@ -18,7 +23,7 @@ export const productApi = createApi({
       providesTags: ['Product'],
     }),
     getProductBySlug: builder.query<ApiResponse<Product>, string>({
-      query: (slug) => ({
+      query: slug => ({
         url: `${API_ROUTES.PRODUCTS.GET_BY_SLUG}/${slug}`,
         method: API_METHODS.GET,
         contentType: 'json',
@@ -34,7 +39,7 @@ export const productApi = createApi({
       providesTags: ['Product'],
     }),
     createProduct: builder.mutation<ApiResponse<Product>, Partial<Product>>({
-      query: (data) => ({
+      query: data => ({
         url: API_ROUTES.PRODUCTS.CREATE,
         method: API_METHODS.POST,
         body: data,
@@ -42,7 +47,10 @@ export const productApi = createApi({
       }),
       invalidatesTags: ['Product'],
     }),
-    updateProduct: builder.mutation<ApiResponse<Product>, { id: number; data: Partial<Product> }>({
+    updateProduct: builder.mutation<
+      ApiResponse<Product>,
+      { id: number; data: Partial<Product> }
+    >({
       query: ({ id, data }) => ({
         url: `${API_ROUTES.PRODUCTS.UPDATE}/${id}`,
         method: API_METHODS.PUT,
@@ -52,7 +60,7 @@ export const productApi = createApi({
       invalidatesTags: ['Product'],
     }),
     deleteProduct: builder.mutation<ApiResponse<null>, number>({
-      query: (id) => ({
+      query: id => ({
         url: `${API_ROUTES.PRODUCTS.DELETE}/${id}`,
         method: API_METHODS.DELETE,
         contentType: 'json',

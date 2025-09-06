@@ -6,7 +6,32 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   padding?: 'none' | 'sm' | 'md' | 'lg';
-  elevation?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
+  elevation?:
+    | 0
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 13
+    | 14
+    | 15
+    | 16
+    | 17
+    | 18
+    | 19
+    | 20
+    | 21
+    | 22
+    | 23
+    | 24;
 }
 
 const paddingMap = {
@@ -24,9 +49,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <MuiCard elevation={elevation} className={className}>
-      <CardContent sx={{ p: paddingMap[padding] }}>
-        {children}
-      </CardContent>
+      <CardContent sx={{ p: paddingMap[padding] }}>{children}</CardContent>
     </MuiCard>
   );
 };

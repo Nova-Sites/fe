@@ -41,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       multiline,
       rows,
     },
-    ref,
+    ref
   ) => {
     return (
       <TextField
@@ -63,14 +63,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         rows={rows}
         InputProps={{
           startAdornment: leftIcon ? (
-            <InputAdornment position="start">{leftIcon}</InputAdornment>
+            <InputAdornment position='start'>{leftIcon}</InputAdornment>
           ) : undefined,
           endAdornment: rightIcon ? (
-            <InputAdornment position="end">{rightIcon}</InputAdornment>
+            <InputAdornment position='end'>{rightIcon}</InputAdornment>
           ) : undefined,
         }}
-        variant="outlined"
-        size="small"
+        variant='outlined'
+        size='small'
       />
     );
   }

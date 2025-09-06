@@ -33,18 +33,24 @@ const Pagination: React.FC<PaginationProps> = ({
   onRowsPerPageChange,
 }) => {
   return (
-    <Stack className={className} direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
+    <Stack
+      className={className}
+      direction='row'
+      alignItems='center'
+      justifyContent='space-between'
+      sx={{ width: '100%' }}
+    >
       {typeof rowsPerPage === 'number' && onRowsPerPageChange ? (
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Typography variant="body2" color="text.secondary">
+        <Stack direction='row' alignItems='center' spacing={1}>
+          <Typography variant='body2' color='text.secondary'>
             Rows per page:
           </Typography>
           <Select
-            size="small"
+            size='small'
             value={rowsPerPage}
-            onChange={(e) => onRowsPerPageChange(Number(e.target.value))}
+            onChange={e => onRowsPerPageChange(Number(e.target.value))}
           >
-            {rowsPerPageOptions.map((opt) => (
+            {rowsPerPageOptions.map(opt => (
               <MenuItem key={opt} value={opt}>
                 {opt}
               </MenuItem>
@@ -61,7 +67,7 @@ const Pagination: React.FC<PaginationProps> = ({
         siblingCount={siblingCount}
         boundaryCount={boundaryCount}
         size={size}
-        color="primary"
+        color='primary'
         showFirstButton
         showLastButton
       />
@@ -70,5 +76,3 @@ const Pagination: React.FC<PaginationProps> = ({
 };
 
 export default Pagination;
-
-

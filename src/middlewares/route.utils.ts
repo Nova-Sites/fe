@@ -1,7 +1,12 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { USER_ROLES, ROUTE_GUARDS, FRONTEND_ROUTES } from '@/constants';
-import { RouteConfig, RouteAccessContext, RouteAccessResult } from '@/types';
+import {
+  RouteConfig,
+  RouteAccessContext,
+  RouteAccessResult,
+  User,
+} from '@/types';
 
 // Route configuration mapping
 const routeConfigs: Record<string, RouteConfig> = {
@@ -9,32 +14,32 @@ const routeConfigs: Record<string, RouteConfig> = {
   [FRONTEND_ROUTES.PUBLIC.HOME]: {
     path: FRONTEND_ROUTES.PUBLIC.HOME,
     type: ROUTE_GUARDS.PUBLIC,
-    requireAuth: false
+    requireAuth: false,
   },
   [FRONTEND_ROUTES.PUBLIC.LOGIN]: {
     path: FRONTEND_ROUTES.PUBLIC.LOGIN,
     type: ROUTE_GUARDS.AUTH,
-    requireAuth: false
+    requireAuth: false,
   },
   [FRONTEND_ROUTES.PUBLIC.REGISTER]: {
     path: FRONTEND_ROUTES.PUBLIC.REGISTER,
     type: ROUTE_GUARDS.AUTH,
-    requireAuth: false
+    requireAuth: false,
   },
   [FRONTEND_ROUTES.PUBLIC.PRODUCTS]: {
     path: FRONTEND_ROUTES.PUBLIC.PRODUCTS,
     type: ROUTE_GUARDS.PUBLIC,
-    requireAuth: false
+    requireAuth: false,
   },
   [FRONTEND_ROUTES.PUBLIC.PRODUCT_DETAIL]: {
     path: FRONTEND_ROUTES.PUBLIC.PRODUCT_DETAIL,
     type: ROUTE_GUARDS.PUBLIC,
-    requireAuth: false
+    requireAuth: false,
   },
   [FRONTEND_ROUTES.PUBLIC.CATEGORIES]: {
     path: FRONTEND_ROUTES.PUBLIC.CATEGORIES,
     type: ROUTE_GUARDS.PUBLIC,
-    requireAuth: false
+    requireAuth: false,
   },
 
   // User routes
@@ -42,7 +47,7 @@ const routeConfigs: Record<string, RouteConfig> = {
     path: FRONTEND_ROUTES.PROTECTED.PROFILE,
     type: ROUTE_GUARDS.PROTECTED,
     requireAuth: true,
-    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN,
   },
 
   // Admin routes
@@ -51,29 +56,29 @@ const routeConfigs: Record<string, RouteConfig> = {
     type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
     requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
-    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN,
   },
   [FRONTEND_ROUTES.ADMIN.USERS]: {
     path: FRONTEND_ROUTES.ADMIN.USERS,
     type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
     requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
-    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN,
   },
   [FRONTEND_ROUTES.ADMIN.PRODUCTS]: {
     path: FRONTEND_ROUTES.ADMIN.PRODUCTS,
     type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
     requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
-    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN,
   },
   [FRONTEND_ROUTES.ADMIN.CATEGORIES]: {
     path: FRONTEND_ROUTES.ADMIN.CATEGORIES,
     type: ROUTE_GUARDS.ADMIN,
     requireAuth: true,
     requiredRoles: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN],
-    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN
-  }
+    redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN,
+  },
 };
 
 // Get route configuration for a path
@@ -94,7 +99,7 @@ export const getRouteConfig = (path: string): RouteConfig => {
   return {
     path,
     type: 'public',
-    requireAuth: false
+    requireAuth: false,
   };
 };
 
@@ -104,7 +109,7 @@ export const isPathMatch = (pattern: string, path: string): boolean => {
   const regexPattern = pattern
     .replace(/:[^/]+/g, '[^/]+') // Replace :param with regex
     .replace(/\*/g, '.*'); // Replace * with regex
-  
+
   const regex = new RegExp(`^${regexPattern}$`);
   return regex.test(path);
 };
@@ -123,22 +128,26 @@ export const checkRouteAccess = (
       redirectComponent: React.createElement(Navigate, {
         to: routeConfig.redirectTo || '/login',
         state: { from: currentPath },
-        replace: true
+        replace: true,
       }),
-      reason: 'Authentication required'
+      reason: 'Authentication required',
     };
   }
 
   // Check role requirements
   if (routeConfig.requiredRoles && user) {
+    const userWithRole = user as User;
     const hasRequiredRole = routeConfig.requiredRoles.some(role => {
       if (role === USER_ROLES.ADMIN) {
-        return user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.SUPER_ADMIN;
+        return (
+          userWithRole.role === USER_ROLES.ADMIN ||
+          userWithRole.role === USER_ROLES.SUPER_ADMIN
+        );
       }
       if (role === USER_ROLES.SUPER_ADMIN) {
-        return user.role === USER_ROLES.SUPER_ADMIN;
+        return userWithRole.role === USER_ROLES.SUPER_ADMIN;
       }
-      return user.role === role;
+      return userWithRole.role === role;
     });
 
     if (!hasRequiredRole) {
@@ -146,16 +155,16 @@ export const checkRouteAccess = (
         hasAccess: false,
         redirectComponent: React.createElement(Navigate, {
           to: '/',
-          replace: true
+          replace: true,
         }),
-        reason: 'Insufficient permissions'
+        reason: 'Insufficient permissions',
       };
     }
   }
 
   // Access granted
   return {
-    hasAccess: true
+    hasAccess: true,
   };
 };
 
@@ -177,14 +186,14 @@ export const getAllRouteConfigs = (): RouteConfig[] => {
 // Check if user can access a specific route
 export const canUserAccessRoute = (
   path: string,
-  user: any,
+  user: unknown,
   isAuthenticated: boolean
 ): boolean => {
   const routeConfig = getRouteConfig(path);
   const context: RouteAccessContext = {
     isAuthenticated,
     user,
-    currentPath: path
+    currentPath: path,
   };
 
   const result = checkRouteAccess(routeConfig, context);
@@ -193,18 +202,16 @@ export const canUserAccessRoute = (
 
 // Get accessible routes for a user
 export const getAccessibleRoutes = (
-  user: any,
+  user: unknown,
   isAuthenticated: boolean
 ): RouteConfig[] => {
-  return getAllRouteConfigs().filter(config => 
+  return getAllRouteConfigs().filter(config =>
     canUserAccessRoute(config.path, user, isAuthenticated)
   );
 };
 
 // Create route guard with custom configuration
-export const createRouteGuard = (
-  customConfigs: RouteConfig[] = []
-) => {
+export const createRouteGuard = (customConfigs: RouteConfig[] = []) => {
   // Register custom configurations
   if (customConfigs.length > 0) {
     registerRoutes(customConfigs);
@@ -216,6 +223,6 @@ export const createRouteGuard = (
     canUserAccessRoute,
     getAccessibleRoutes,
     registerRoute,
-    registerRoutes
+    registerRoutes,
   };
 };

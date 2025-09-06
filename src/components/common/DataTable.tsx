@@ -54,7 +54,9 @@ export interface DataTableProps<T extends { id: string | number }> {
   onSearchChange?: (value: string) => void;
 }
 
-function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) {
+function DataTable<T extends { id: string | number }>(
+  props: DataTableProps<T>
+) {
   const {
     title,
     columns,
@@ -85,42 +87,50 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
     if (onRequestSort) onRequestSort(property);
   };
 
-  const allSelected = checkboxSelection && rows.length > 0 && selectedIds.length === rows.length;
-  const someSelected = checkboxSelection && selectedIds.length > 0 && selectedIds.length < rows.length;
+  const allSelected =
+    checkboxSelection && rows.length > 0 && selectedIds.length === rows.length;
+  const someSelected =
+    checkboxSelection &&
+    selectedIds.length > 0 &&
+    selectedIds.length < rows.length;
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       {(title || searchable) && (
-        <Toolbar sx={{ gap: 2, justifyContent: 'space-between', flexWrap: 'wrap' }}>
-          <Typography variant="h6" component="div">
+        <Toolbar
+          sx={{ gap: 2, justifyContent: 'space-between', flexWrap: 'wrap' }}
+        >
+          <Typography variant='h6' component='div'>
             {title}
           </Typography>
           {searchable && (
             <TextField
-              size="small"
+              size='small'
               placeholder={searchPlaceholder}
               value={searchValue}
-              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+              onChange={e => onSearchChange && onSearchChange(e.target.value)}
             />
           )}
         </Toolbar>
       )}
 
       <TableContainer>
-        <Table aria-label="data table">
+        <Table aria-label='data table'>
           <TableHead>
             <TableRow>
               {checkboxSelection && (
-                <TableCell padding="checkbox">
+                <TableCell padding='checkbox'>
                   <Checkbox
-                    color="primary"
+                    color='primary'
                     indeterminate={someSelected}
                     checked={allSelected}
-                    onChange={(e) => onSelectAllClick && onSelectAllClick(e.target.checked)}
+                    onChange={e =>
+                      onSelectAllClick && onSelectAllClick(e.target.checked)
+                    }
                   />
                 </TableCell>
               )}
-              {columns.map((col) => (
+              {columns.map(col => (
                 <TableCell
                   key={String(col.id)}
                   align={col.numeric ? 'right' : 'left'}
@@ -136,8 +146,10 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
                     >
                       {col.label}
                       {orderBy === col.id ? (
-                        <Box component="span" sx={visuallyHidden}>
-                          {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                        <Box component='span' sx={visuallyHidden}>
+                          {order === 'desc'
+                            ? 'sorted descending'
+                            : 'sorted ascending'}
                         </Box>
                       ) : null}
                     </TableSortLabel>
@@ -149,7 +161,7 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map(row => (
               <TableRow
                 hover
                 key={String(row.id)}
@@ -158,29 +170,42 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
                 sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
               >
                 {checkboxSelection && (
-                  <TableCell padding="checkbox">
+                  <TableCell padding='checkbox'>
                     <Checkbox
-                      color="primary"
+                      color='primary'
                       checked={selectedIds.includes(row.id)}
-                      onChange={(e) => {
+                      onChange={e => {
                         e.stopPropagation();
-                        if (onRowSelectChange) onRowSelectChange(row.id, e.target.checked);
+                        if (onRowSelectChange)
+                          onRowSelectChange(row.id, e.target.checked);
                       }}
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={e => e.stopPropagation()}
                     />
                   </TableCell>
                 )}
-                {columns.map((col) => (
-                  <TableCell key={String(col.id)} align={col.numeric ? 'right' : 'left'}>
-                    {col.render ? col.render(row) : (row[col.id] as unknown as React.ReactNode)}
+                {columns.map(col => (
+                  <TableCell
+                    key={String(col.id)}
+                    align={col.numeric ? 'right' : 'left'}
+                  >
+                    {col.render
+                      ? col.render(row)
+                      : (row[col.id] as unknown as React.ReactNode)}
                   </TableCell>
                 ))}
               </TableRow>
             ))}
             {rows.length === 0 && (
               <TableRow>
-                <TableCell colSpan={(checkboxSelection ? 1 : 0) + columns.length}>
-                  <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 3 }}>
+                <TableCell
+                  colSpan={(checkboxSelection ? 1 : 0) + columns.length}
+                >
+                  <Typography
+                    variant='body2'
+                    color='text.secondary'
+                    align='center'
+                    sx={{ py: 3 }}
+                  >
                     No data
                   </Typography>
                 </TableCell>
@@ -190,12 +215,17 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
         </Table>
       </TableContainer>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2, gap: 2, flexWrap: 'wrap' }}>
+      <Stack
+        direction='row'
+        alignItems='center'
+        justifyContent='space-between'
+        sx={{ p: 2, gap: 2, flexWrap: 'wrap' }}
+      >
         <Pagination
           page={page}
           count={pageCount}
           onChange={(_, p) => onPageChange && onPageChange(p)}
-          size="medium"
+          size='medium'
           rowsPerPage={rowsPerPage}
           rowsPerPageOptions={rowsPerPageOptions}
           onRowsPerPageChange={onRowsPerPageChange}
@@ -206,5 +236,3 @@ function DataTable<T extends { id: string | number }>(props: DataTableProps<T>) 
 }
 
 export default DataTable;
-
-

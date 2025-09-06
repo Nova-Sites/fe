@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <AppWrapper />
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

@@ -20,9 +20,12 @@ export const uploadApi = createApi({
   reducerPath: 'uploadApi',
   baseQuery: createBaseQuery(),
   tagTypes: ['Upload'],
-  endpoints: (builder) => ({
-    uploadSingleImage: builder.mutation<ApiResponse<UploadResponse>, UploadData>({
-      query: (data) => {
+  endpoints: builder => ({
+    uploadSingleImage: builder.mutation<
+      ApiResponse<UploadResponse>,
+      UploadData
+    >({
+      query: data => {
         const formData = createFormData({
           file: data.file,
           folder: data.folder || 'images',
@@ -39,8 +42,11 @@ export const uploadApi = createApi({
       invalidatesTags: ['Upload'],
     }),
 
-    uploadMultipleImages: builder.mutation<ApiResponse<UploadResponse[]>, { files: File[]; folder?: string }>({
-      query: (data) => {
+    uploadMultipleImages: builder.mutation<
+      ApiResponse<UploadResponse[]>,
+      { files: File[]; folder?: string }
+    >({
+      query: data => {
         const formData = createFormData({
           files: data.files,
           folder: data.folder || 'images',
@@ -56,8 +62,11 @@ export const uploadApi = createApi({
       invalidatesTags: ['Upload'],
     }),
 
-    uploadAvatar: builder.mutation<ApiResponse<UploadResponse>, { file: File; userId?: number }>({
-      query: (data) => {
+    uploadAvatar: builder.mutation<
+      ApiResponse<UploadResponse>,
+      { file: File; userId?: number }
+    >({
+      query: data => {
         const formData = createFormData({
           file: data.file,
           userId: data.userId,
@@ -73,8 +82,11 @@ export const uploadApi = createApi({
       invalidatesTags: ['Upload'],
     }),
 
-    uploadProductImage: builder.mutation<ApiResponse<UploadResponse>, { file: File; productId?: number }>({
-      query: (data) => {
+    uploadProductImage: builder.mutation<
+      ApiResponse<UploadResponse>,
+      { file: File; productId?: number }
+    >({
+      query: data => {
         const formData = createFormData({
           file: data.file,
           productId: data.productId,

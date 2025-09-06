@@ -2,8 +2,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '@/store';
-import { setUser, setToken, clearAuth, setError, clearError, setLoading, setAuthenticated } from '@/store/slices/authSlice';
-import { useLoginMutation, useRegisterMutation, useLogoutMutation, useGetProfileQuery } from '@/services/auth.api';
+import {
+  setUser,
+  setToken,
+  clearAuth,
+  setError,
+  clearError,
+  setLoading,
+  setAuthenticated,
+} from '@/store/slices/authSlice';
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useLogoutMutation,
+  useGetProfileQuery,
+} from '@/services/auth.api';
 import type { LoginCredentials, RegisterData } from '@/types';
 import { USER_ROLES } from '@/constants';
 
@@ -18,27 +31,32 @@ export const useAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, isAuthenticated, token, isLoading, error } = useSelector((state: RootState) => state.auth);
-  
+  const { user, isAuthenticated, token, isLoading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
   // Ref để track nếu đã thử fetch profile
   const hasAttemptedProfileFetch = useRef(false);
   const isInitialized = useRef(false);
-  
+
   const [loginMutation, { isLoading: isLoginLoading }] = useLoginMutation();
-  const [registerMutation, { isLoading: isRegisterLoading }] = useRegisterMutation();
+  const [registerMutation, { isLoading: isRegisterLoading }] =
+    useRegisterMutation();
   const [logoutMutation, { isLoading: isLogoutLoading }] = useLogoutMutation();
-  
+
   // Chỉ fetch profile một lần khi mount và chưa có user
-  const shouldFetchProfile = !user && !hasAttemptedProfileFetch.current && !isInitialized.current;
-  
+  const shouldFetchProfile =
+    !user && !hasAttemptedProfileFetch.current && !isInitialized.current;
+
   // Computed values
-  const isAdmin = user?.role === USER_ROLES.ADMIN || user?.role === USER_ROLES.SUPER_ADMIN;
+  const isAdmin =
+    user?.role === USER_ROLES.ADMIN || user?.role === USER_ROLES.SUPER_ADMIN;
   const isSuperAdmin = user?.role === USER_ROLES.SUPER_ADMIN;
-  
-  const { 
-    data: profileData, 
-    isLoading: isProfileLoading, 
-    error: profileError 
+
+  const {
+    data: profileData,
+    isLoading: isProfileLoading,
+    error: profileError,
   } = useGetProfileQuery(undefined, {
     skip: !shouldFetchProfile,
     refetchOnMountOrArgChange: false,
@@ -55,7 +73,7 @@ export const useAuth = () => {
         hasAttemptedProfileFetch.current = true;
       }
     }
-  }, []);
+  }, [user]);
 
   // Handle profile data changes - chỉ chạy khi có data hoặc error
   useEffect(() => {
@@ -75,17 +93,23 @@ export const useAuth = () => {
     try {
       dispatch(setLoading(true));
       dispatch(clearError());
-      
+
       const result = await loginMutation(credentials).unwrap();
 
       if (result.success && result.data) {
-        const checkAdmin = result.data.user.role === USER_ROLES.ADMIN || result.data.user.role === USER_ROLES.SUPER_ADMIN;
+        const checkAdmin =
+          result.data.user.role === USER_ROLES.ADMIN ||
+          result.data.user.role === USER_ROLES.SUPER_ADMIN;
         dispatch(setUser(result.data.user));
         dispatch(setToken('authenticated'));
         dispatch(setAuthenticated(true));
         // Reset profile fetch attempt
         hasAttemptedProfileFetch.current = false;
-        checkAdmin ? navigate('/admin') : navigate('/');
+        if (checkAdmin) {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
         return { success: true };
       } else {
         dispatch(setError(result.message || 'Login failed'));
@@ -93,7 +117,8 @@ export const useAuth = () => {
       }
     } catch (error: unknown) {
       const apiError = error as ApiError;
-      const errorMessage = apiError?.data?.message || apiError?.message || 'Login failed';
+      const errorMessage =
+        apiError?.data?.message || apiError?.message || 'Login failed';
       dispatch(setError(errorMessage));
       return { success: false, error: errorMessage };
     } finally {
@@ -105,9 +130,9 @@ export const useAuth = () => {
     try {
       dispatch(setLoading(true));
       dispatch(clearError());
-      
+
       const result = await registerMutation(data).unwrap();
-      
+
       if (result.success && result.data) {
         // Registration không tự động login, chỉ hiển thị success message
         dispatch(setError('')); // Clear any errors
@@ -118,7 +143,8 @@ export const useAuth = () => {
       }
     } catch (error: unknown) {
       const apiError = error as ApiError;
-      const errorMessage = apiError?.data?.message || apiError?.message || 'Registration failed';
+      const errorMessage =
+        apiError?.data?.message || apiError?.message || 'Registration failed';
       dispatch(setError(errorMessage));
       return { success: false, error: errorMessage };
     } finally {
@@ -127,8 +153,6 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
-    console.log("start logout...");
-    
     try {
       await logoutMutation().unwrap();
       // Backend sẽ clear cookies tự động
@@ -160,9 +184,14 @@ export const useAuth = () => {
     user,
     isAuthenticated,
     token,
-    isLoading: isLoading || isLoginLoading || isRegisterLoading || isLogoutLoading || isProfileLoading,
+    isLoading:
+      isLoading ||
+      isLoginLoading ||
+      isRegisterLoading ||
+      isLogoutLoading ||
+      isProfileLoading,
     error,
-    
+
     // Actions
     login,
     register,
@@ -170,7 +199,7 @@ export const useAuth = () => {
     updateProfile,
     refetchProfile,
     clearError: () => dispatch(clearError()),
-    
+
     // Computed values
     isAdmin,
     isSuperAdmin,

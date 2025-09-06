@@ -15,12 +15,12 @@ export const store = configureStore({
     [productApi.reducerPath]: productApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [uploadApi.reducerPath]: uploadApi.reducer,
-    
+
     // Regular reducers
     auth: authReducer,
     ui: uiReducer,
   },
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],

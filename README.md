@@ -33,6 +33,7 @@ Các middlewares được thiết kế để bảo vệ routes và xử lý logi
 Các utility functions được tổ chức theo chức năng:
 
 #### Validation Utils
+
 - `isValidEmail()` - Kiểm tra email hợp lệ
 - `isValidPassword()` - Kiểm tra password mạnh
 - `isValidPhone()` - Kiểm tra số điện thoại
@@ -40,6 +41,7 @@ Các utility functions được tổ chức theo chức năng:
 - `isValidSlug()` - Kiểm tra slug hợp lệ
 
 #### String Utils
+
 - `toTitleCase()` - Chuyển đổi thành title case
 - `toSlug()` - Tạo slug từ string
 - `toCamelCase()` - Chuyển đổi thành camelCase
@@ -47,12 +49,14 @@ Các utility functions được tổ chức theo chức năng:
 - `capitalize()` - Viết hoa chữ cái đầu
 
 #### Date Utils
+
 - `formatDate()` - Format date theo pattern
 - `getRelativeTime()` - Thời gian tương đối (2 hours ago)
 - `isToday()`, `isYesterday()` - Kiểm tra ngày
 - `addDays()`, `subtractDays()` - Thêm/bớt ngày
 
 #### File Utils
+
 - `getFileExtension()` - Lấy extension của file
 - `formatFileSize()` - Format kích thước file
 - `isImageFile()`, `isVideoFile()` - Kiểm tra loại file
@@ -60,24 +64,28 @@ Các utility functions được tổ chức theo chức năng:
 - `validateFileUpload()` - Validate file upload
 
 #### Crypto Utils
+
 - `generateSecureToken()` - Tạo token bảo mật
 - `generateUUID()` - Tạo UUID v4
 - `hashPassword()` - Hash password
 - `encryptText()`, `decryptText()` - Mã hóa/giải mã
 
 #### Response Utils
+
 - `successResponse()` - Tạo response thành công
 - `errorResponse()` - Tạo response lỗi
 - `paginatedResponse()` - Tạo response có pagination
 - `validationErrorResponse()` - Tạo response validation error
 
 #### Pagination Utils
+
 - `calculatePagination()` - Tính toán thông tin pagination
 - `validatePagination()` - Validate pagination params
 - `getPaginationLinks()` - Tạo links pagination
 - `paginateArray()` - Phân trang array
 
 #### Sanitize Utils
+
 - `sanitizeHtml()` - Làm sạch HTML
 - `sanitizeText()` - Làm sạch text
 - `removeXSS()` - Loại bỏ XSS attempts
@@ -88,24 +96,29 @@ Các utility functions được tổ chức theo chức năng:
 Routes được tổ chức theo nhóm logic:
 
 #### Public Routes
+
 - `/` - Home page
 
 #### Auth Routes
+
 - `/login` - Login page
 - `/register` - Register page
 
 #### User Routes
+
 - `/profile` - User profile
 - `/products` - Products list
 - `/products/:slug` - Product detail
 - `/categories` - Categories list
 
 #### Admin Routes
+
 - `/admin` - Admin dashboard
 
 ### 🔐 Authentication
 
 Hệ thống authentication sử dụng:
+
 - Redux store để quản lý state
 - RTK Query để gọi API
 - Cookies để lưu trữ tokens

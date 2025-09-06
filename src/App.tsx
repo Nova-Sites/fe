@@ -1,14 +1,14 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { Loading } from '@/components/common';
 import { ErrorBoundary, RouteGuard } from '@/middlewares';
 import { AuthProvider } from '@/contexts/AuthContext';
-import {
-  publicRoutes,
-  authRoutes,
-  userRoutes,
-  adminRoutes,
-} from '@/routes';
+import { publicRoutes, authRoutes, userRoutes, adminRoutes } from '@/routes';
 import { RouteObject } from 'react-router-dom';
 
 const App: React.FC = () => {
@@ -41,11 +41,7 @@ const App: React.FC = () => {
                 <Route
                   key={route.path}
                   path={route.path}
-                  element={
-                    <RouteGuard>
-                      {route.element}
-                    </RouteGuard>
-                  }
+                  element={<RouteGuard>{route.element}</RouteGuard>}
                 />
               ))}
 
@@ -59,7 +55,9 @@ const App: React.FC = () => {
                   {route.children?.map((child: RouteObject, idx: number) => (
                     <Route
                       key={(child.path as string) || `index-${idx}`}
-                      index={Boolean((child as any).index)}
+                      index={Boolean(
+                        (child as RouteObject & { index?: boolean }).index
+                      )}
                       path={child.path as string | undefined}
                       element={child.element}
                     />
@@ -68,7 +66,7 @@ const App: React.FC = () => {
               ))}
 
               {/* Catch all route -> 404 */}
-              <Route path="*" element={<Navigate to="/404" replace />} />
+              <Route path='*' element={<Navigate to='/404' replace />} />
             </Routes>
           </Suspense>
         </AuthProvider>

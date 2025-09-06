@@ -25,7 +25,9 @@ const AdminCategoriesPage: React.FC = () => {
     const term = search.trim().toLowerCase();
     if (!term) return allCategories;
     return allCategories.filter(
-      (c) => c.name.toLowerCase().includes(term) || c.description.toLowerCase().includes(term)
+      c =>
+        c.name.toLowerCase().includes(term) ||
+        c.description.toLowerCase().includes(term)
     );
   }, [allCategories, search]);
 
@@ -56,7 +58,7 @@ const AdminCategoriesPage: React.FC = () => {
 
   const handleRequestSort = (property: keyof Category) => {
     if (orderBy === property) {
-      setOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+      setOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setOrderBy(property);
       setOrder('asc');
@@ -64,11 +66,11 @@ const AdminCategoriesPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
-      <p className="text-gray-600">Manage categories here.</p>
+    <div className='p-6'>
+      <h1 className='text-2xl font-bold mb-4'>Categories</h1>
+      <p className='text-gray-600'>Manage categories here.</p>
       <DataTable<Category>
-        title="Categories"
+        title='Categories'
         columns={[
           { id: 'id', label: 'ID', sortable: true },
           { id: 'name', label: 'Name', sortable: true },
@@ -82,8 +84,8 @@ const AdminCategoriesPage: React.FC = () => {
         order={order}
         orderBy={orderBy}
         onRequestSort={handleRequestSort}
-        onPageChange={(p) => setPage(p)}
-        onRowsPerPageChange={(rpp) => {
+        onPageChange={p => setPage(p)}
+        onRowsPerPageChange={rpp => {
           setRowsPerPage(rpp);
           setPage(1);
         }}
@@ -92,9 +94,9 @@ const AdminCategoriesPage: React.FC = () => {
         onSelectAllClick={() => {}}
         onRowClick={() => {}}
         searchable={true}
-        searchPlaceholder="Search categories"
+        searchPlaceholder='Search categories'
         searchValue={search}
-        onSearchChange={(value) => {
+        onSearchChange={value => {
           setSearch(value);
           setPage(1);
         }}
@@ -104,5 +106,3 @@ const AdminCategoriesPage: React.FC = () => {
 };
 
 export default AdminCategoriesPage;
-
-

@@ -6,7 +6,9 @@ import { FRONTEND_ROUTES } from '@/constants';
 // Lazy load user components
 const ProfilePage = lazy(() => import('@/pages/Profile/ProfilePage'));
 const ProductsPage = lazy(() => import('@/pages/Products/ProductsPage'));
-const ProductDetailPage = lazy(() => import('@/pages/Products/ProductDetailPage'));
+const ProductDetailPage = lazy(
+  () => import('@/pages/Products/ProductDetailPage')
+);
 const CategoriesPage = lazy(() => import('@/pages/Categories/CategoriesPage'));
 
 // User route configurations

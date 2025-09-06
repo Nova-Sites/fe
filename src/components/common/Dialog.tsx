@@ -26,7 +26,13 @@ const Dialog: React.FC<DialogProps> = ({
   fullScreen = false,
 }) => {
   return (
-    <MuiDialog open={open} onClose={onClose} fullWidth={fullWidth} maxWidth={maxWidth} fullScreen={fullScreen}>
+    <MuiDialog
+      open={open}
+      onClose={onClose}
+      fullWidth={fullWidth}
+      maxWidth={maxWidth}
+      fullScreen={fullScreen}
+    >
       {title && <DialogTitle>{title}</DialogTitle>}
       {children && <DialogContent dividers>{children}</DialogContent>}
       {actions && <DialogActions>{actions}</DialogActions>}
@@ -35,5 +41,3 @@ const Dialog: React.FC<DialogProps> = ({
 };
 
 export default Dialog;
-
-

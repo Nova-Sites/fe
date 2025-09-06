@@ -7,7 +7,7 @@ export const categoryApi = createApi({
   reducerPath: 'categoryApi',
   baseQuery: createBaseQuery(),
   tagTypes: ['Category'],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getCategories: builder.query<ApiResponse<Category[]>, void>({
       query: () => ({
         url: API_ROUTES.CATEGORIES.GET_ALL,
@@ -17,7 +17,7 @@ export const categoryApi = createApi({
       providesTags: ['Category'],
     }),
     getCategoryBySlug: builder.query<ApiResponse<Category>, string>({
-      query: (slug) => ({
+      query: slug => ({
         url: `${API_ROUTES.CATEGORIES.GET_BY_SLUG}/${slug}`,
         method: API_METHODS.GET,
         contentType: 'json',
@@ -25,7 +25,7 @@ export const categoryApi = createApi({
       providesTags: (_result, _error, slug) => [{ type: 'Category', id: slug }],
     }),
     createCategory: builder.mutation<ApiResponse<Category>, Partial<Category>>({
-      query: (data) => ({
+      query: data => ({
         url: API_ROUTES.CATEGORIES.CREATE,
         method: API_METHODS.POST,
         body: data,
@@ -33,7 +33,10 @@ export const categoryApi = createApi({
       }),
       invalidatesTags: ['Category'],
     }),
-    updateCategory: builder.mutation<ApiResponse<Category>, { id: number; data: Partial<Category> }>({
+    updateCategory: builder.mutation<
+      ApiResponse<Category>,
+      { id: number; data: Partial<Category> }
+    >({
       query: ({ id, data }) => ({
         url: `${API_ROUTES.CATEGORIES.UPDATE}/${id}`,
         method: API_METHODS.PUT,
@@ -43,7 +46,7 @@ export const categoryApi = createApi({
       invalidatesTags: ['Category'],
     }),
     deleteCategory: builder.mutation<ApiResponse<null>, number>({
-      query: (id) => ({
+      query: id => ({
         url: `${API_ROUTES.CATEGORIES.DELETE}/${id}`,
         method: API_METHODS.DELETE,
         contentType: 'json',

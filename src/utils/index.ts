@@ -5,5 +5,5 @@ export * from './date.utils';
 export * from './file.utils';
 export * from './pagination.utils';
 export * from './sanitize.utils';
-export * from './response.utils'; 
+export * from './response.utils';
 export * from './crypto.utils';

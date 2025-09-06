@@ -32,18 +32,18 @@ export const sanitizeUrl = (url: string): string => {
   // Remove dangerous protocols
   const dangerousProtocols = ['javascript:', 'data:', 'vbscript:', 'file:'];
   const lowerUrl = url.toLowerCase();
-  
+
   for (const protocol of dangerousProtocols) {
     if (lowerUrl.startsWith(protocol)) {
       return '';
     }
   }
-  
+
   // Ensure URL starts with http or https
   if (!url.match(/^https?:\/\//)) {
     return `https://${url}`;
   }
-  
+
   return url;
 };
 
@@ -57,9 +57,7 @@ export const sanitizeEmail = (email: string): string => {
 
 // Sanitize phone number
 export const sanitizePhone = (phone: string): string => {
-  return phone
-    .replace(/[^\d+\-()\s]/g, '')
-    .trim();
+  return phone.replace(/[^\d+\-()\s]/g, '').trim();
 };
 
 // Sanitize filename
@@ -72,24 +70,27 @@ export const sanitizeFilenameText = (filename: string): string => {
 };
 
 // Sanitize object properties
-export const sanitizeObject = <T extends Record<string, any>>(
+export const sanitizeObject = <T extends Record<string, unknown>>(
   obj: T,
   allowedKeys: string[] = []
 ): Partial<T> => {
   const sanitized: Partial<T> = {};
-  
+
   for (const [key, value] of Object.entries(obj)) {
     if (allowedKeys.length === 0 || allowedKeys.includes(key)) {
       if (typeof value === 'string') {
         sanitized[key as keyof T] = sanitizeText(value) as T[keyof T];
       } else if (typeof value === 'object' && value !== null) {
-        sanitized[key as keyof T] = sanitizeObject(value, allowedKeys) as T[keyof T];
+        sanitized[key as keyof T] = sanitizeObject(
+          value as Record<string, unknown>,
+          allowedKeys
+        ) as T[keyof T];
       } else {
-        sanitized[key as keyof T] = value;
+        sanitized[key as keyof T] = value as T[keyof T];
       }
     }
   }
-  
+
   return sanitized;
 };
 
@@ -127,16 +128,28 @@ export const removeXSS = (input: string): string => {
 // Sanitize SQL injection attempts
 export const removeSQLInjection = (input: string): string => {
   const sqlKeywords = [
-    'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER',
-    'UNION', 'EXEC', 'EXECUTE', 'SCRIPT', 'DECLARE', 'CAST', 'CONVERT'
+    'SELECT',
+    'INSERT',
+    'UPDATE',
+    'DELETE',
+    'DROP',
+    'CREATE',
+    'ALTER',
+    'UNION',
+    'EXEC',
+    'EXECUTE',
+    'SCRIPT',
+    'DECLARE',
+    'CAST',
+    'CONVERT',
   ];
-  
+
   let sanitized = input;
   for (const keyword of sqlKeywords) {
     const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
     sanitized = sanitized.replace(regex, '');
   }
-  
+
   return sanitized
     .replace(/['";]/g, '')
     .replace(/--/g, '')
@@ -145,19 +158,32 @@ export const removeSQLInjection = (input: string): string => {
 };
 
 // Sanitize HTML attributes
-export const sanitizeHtmlAttributes = (attributes: Record<string, string>): Record<string, string> => {
+export const sanitizeHtmlAttributes = (
+  attributes: Record<string, string>
+): Record<string, string> => {
   const allowedAttributes = [
-    'class', 'id', 'style', 'title', 'alt', 'src', 'href', 'target',
-    'width', 'height', 'border', 'cellpadding', 'cellspacing'
+    'class',
+    'id',
+    'style',
+    'title',
+    'alt',
+    'src',
+    'href',
+    'target',
+    'width',
+    'height',
+    'border',
+    'cellpadding',
+    'cellspacing',
   ];
-  
+
   const sanitized: Record<string, string> = {};
-  
+
   for (const [key, value] of Object.entries(attributes)) {
     if (allowedAttributes.includes(key.toLowerCase())) {
       sanitized[key] = sanitizeText(value);
     }
   }
-  
+
   return sanitized;
 };

@@ -13,7 +13,7 @@ export const isValidPassword = (password: string): boolean => {
 
 // Phone number validation
 export const isValidPhone = (phone: string): boolean => {
-  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+  const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
   return phoneRegex.test(phone);
 };
 
@@ -34,17 +34,17 @@ export const isValidSlug = (slug: string): boolean => {
 };
 
 // Number validation
-export const isValidNumber = (value: any): boolean => {
+export const isValidNumber = (value: number): boolean => {
   return !isNaN(value) && isFinite(value);
 };
 
 // Integer validation
-export const isValidInteger = (value: any): boolean => {
+export const isValidInteger = (value: number): boolean => {
   return Number.isInteger(Number(value));
 };
 
 // Positive number validation
-export const isPositiveNumber = (value: any): boolean => {
+export const isPositiveNumber = (value: number): boolean => {
   return isValidNumber(value) && Number(value) > 0;
 };
 
@@ -72,7 +72,10 @@ export const isValidFileSize = (size: number, maxSize: number): boolean => {
 };
 
 // File type validation
-export const isValidFileType = (filename: string, allowedTypes: string[]): boolean => {
+export const isValidFileType = (
+  filename: string,
+  allowedTypes: string[]
+): boolean => {
   const extension = filename.split('.').pop()?.toLowerCase();
   return extension ? allowedTypes.includes(extension) : false;
 };
