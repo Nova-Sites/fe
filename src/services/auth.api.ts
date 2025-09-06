@@ -75,11 +75,14 @@ export const authApi = createApi({
       }),
       invalidatesTags: ['Auth'],
     }),
-    verifyOTP: builder.mutation<ApiResponse<{ user: User }>, { otp: string }>({
-      query: ({ otp }) => ({
+    verifyOTP: builder.mutation<
+      ApiResponse<{ user: User }>,
+      { otp: string; email: string }
+    >({
+      query: ({ otp, email }) => ({
         url: API_ROUTES.AUTH.VERIFY_OTP,
         method: API_METHODS.POST,
-        body: { otp },
+        body: { otp, email },
         contentType: 'json',
       }),
       invalidatesTags: ['Auth'],

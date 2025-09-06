@@ -69,7 +69,7 @@ const OTPVerificationPage: React.FC = () => {
 
     try {
       setError(null);
-      const result = await verifyOTP(otp);
+      const result = await verifyOTP(otp, email);
 
       if (result.success) {
         setSuccess('Email verified successfully!');

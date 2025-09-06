@@ -185,12 +185,12 @@ export const useAuth = () => {
     window.location.reload();
   }, []);
 
-  const verifyOTP = async (otp: string) => {
+  const verifyOTP = async (otp: string, email: string) => {
     try {
       dispatch(setLoading(true));
       dispatch(clearError());
 
-      const result = await verifyOTPMutation({ otp }).unwrap();
+      const result = await verifyOTPMutation({ otp, email }).unwrap();
 
       if (result.success && result.data) {
         dispatch(setUser(result.data.user));
