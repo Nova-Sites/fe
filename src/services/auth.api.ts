@@ -75,6 +75,23 @@ export const authApi = createApi({
       }),
       invalidatesTags: ['Auth'],
     }),
+    verifyOTP: builder.mutation<ApiResponse<{ user: User }>, { otp: string }>({
+      query: ({ otp }) => ({
+        url: API_ROUTES.AUTH.VERIFY_OTP,
+        method: API_METHODS.POST,
+        body: { otp },
+        contentType: 'json',
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+    resendOTP: builder.mutation<ApiResponse<null>, { email: string }>({
+      query: ({ email }) => ({
+        url: API_ROUTES.AUTH.RESEND_OTP,
+        method: API_METHODS.POST,
+        body: { email },
+        contentType: 'json',
+      }),
+    }),
   }),
 });
 
@@ -84,4 +101,6 @@ export const {
   useLogoutMutation,
   useGetProfileQuery,
   useRefreshTokenMutation,
+  useVerifyOTPMutation,
+  useResendOTPMutation,
 } = authApi;

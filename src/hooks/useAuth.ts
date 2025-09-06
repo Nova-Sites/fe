@@ -16,6 +16,8 @@ import {
   useRegisterMutation,
   useLogoutMutation,
   useGetProfileQuery,
+  useVerifyOTPMutation,
+  useResendOTPMutation,
 } from '@/services/auth.api';
 import type { LoginCredentials, RegisterData } from '@/types';
 import { USER_ROLES } from '@/constants';
@@ -43,6 +45,10 @@ export const useAuth = () => {
   const [registerMutation, { isLoading: isRegisterLoading }] =
     useRegisterMutation();
   const [logoutMutation, { isLoading: isLogoutLoading }] = useLogoutMutation();
+  const [verifyOTPMutation, { isLoading: isVerifyOTPLoading }] =
+    useVerifyOTPMutation();
+  const [resendOTPMutation, { isLoading: isResendOTPLoading }] =
+    useResendOTPMutation();
 
   // Chỉ fetch profile một lần khi mount và chưa có user
   const shouldFetchProfile =
@@ -179,6 +185,59 @@ export const useAuth = () => {
     window.location.reload();
   }, []);
 
+  const verifyOTP = async (otp: string) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(clearError());
+
+      const result = await verifyOTPMutation({ otp }).unwrap();
+
+      if (result.success && result.data) {
+        dispatch(setUser(result.data.user));
+        dispatch(setAuthenticated(true));
+        dispatch(setToken('authenticated'));
+        return { success: true };
+      } else {
+        dispatch(setError(result.message || 'OTP verification failed'));
+        return { success: false, error: result.message };
+      }
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      const errorMessage =
+        apiError?.data?.message ||
+        apiError?.message ||
+        'OTP verification failed';
+      dispatch(setError(errorMessage));
+      return { success: false, error: errorMessage };
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  const resendOTP = async (email: string) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(clearError());
+
+      const result = await resendOTPMutation({ email }).unwrap();
+
+      if (result.success) {
+        return { success: true };
+      } else {
+        dispatch(setError(result.message || 'Failed to resend OTP'));
+        return { success: false, error: result.message };
+      }
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      const errorMessage =
+        apiError?.data?.message || apiError?.message || 'Failed to resend OTP';
+      dispatch(setError(errorMessage));
+      return { success: false, error: errorMessage };
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
   return {
     // State
     user,
@@ -189,7 +248,9 @@ export const useAuth = () => {
       isLoginLoading ||
       isRegisterLoading ||
       isLogoutLoading ||
-      isProfileLoading,
+      isProfileLoading ||
+      isVerifyOTPLoading ||
+      isResendOTPLoading,
     error,
 
     // Actions
@@ -198,6 +259,8 @@ export const useAuth = () => {
     logout,
     updateProfile,
     refetchProfile,
+    verifyOTP,
+    resendOTP,
     clearError: () => dispatch(clearError()),
 
     // Computed values
