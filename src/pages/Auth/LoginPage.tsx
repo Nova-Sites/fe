@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Checkbox, FormControlLabel, Alert, IconButton } from '@mui/material';
+import { Checkbox, FormControlLabel, Alert ,IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
@@ -9,11 +9,8 @@ import { SignInPage } from '@toolpad/core/SignInPage';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { useDispatch } from 'react-redux';
-import { setUser, setAuthenticated } from '@/store/slices/authSlice';
-import { useLoginMutation } from '@/services/auth.api';
 import { Button as CommonButton, Input as CommonInput } from '@/components/common';
-
+import { useAuth } from '@/hooks/useAuth';
 
 const providers = [{ id: 'credentials', name: 'Email and Password' }];
 
@@ -89,15 +86,17 @@ function Title() {
   return <h2 style={{ marginBottom: 8 }}>Login</h2>;
 }
 
+
 type SubtitleProps = { message?: string; severity?: 'error' | 'warning' | 'info' | 'success' };
 
 function Subtitle({ message, severity = 'warning' }: SubtitleProps) {
   return (
     <Alert sx={{ mb: 2, px: 1, py: 0.25, width: '100%' }} severity={severity}>
-      {message ?? 'We are investigating an ongoing outage.'}
+      {message ?? 'Please login with email and password'}
     </Alert>
   );
 }
+
 
 function RememberMeCheckbox() {
   const theme = useTheme();
@@ -125,10 +124,11 @@ function RememberMeCheckbox() {
 export default function SlotsSignIn() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { login, isAdmin, isLoading } = useAuth();
   const { isAuthenticated } = useAuthContext();
-  const [loginMutation, { isLoading, error }] = useLoginMutation();
   const [apiError, setApiError] = React.useState<string | null>(null);
+
+
 
   const extractErrorMessage = React.useCallback((err: unknown): string => {
     const fallback = 'Login failed. Please check your credentials and try again.';
@@ -143,17 +143,10 @@ export default function SlotsSignIn() {
     );
   }, []);
 
-  React.useEffect(() => {
-    if (error) {
-      setApiError(extractErrorMessage(error));
-    }
-  }, [error, extractErrorMessage]);
 
-
-  // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      isAdmin ? navigate('/admin') : navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
@@ -164,30 +157,19 @@ export default function SlotsSignIn() {
   return (
     <AppProvider theme={theme}>
       <SignInPage
-        signIn={(_provider, formData) => {
+        signIn={async (_provider, formData) => {
           try {
             const email = formData?.get('email') as string;
             const password = formData?.get('password') as string;
-
-            loginMutation({ email, password })
-              .unwrap()
-              .then((result) => {
-                if (result.success && result.data) {
-                  setApiError(null);
-                  dispatch(setUser(result.data.user));
-                  dispatch(setAuthenticated(true));
-                  navigate('/');
-                }
-              })
-              .catch((err) => {
-                const msg = extractErrorMessage(err);
-                setApiError(msg);
-                console.error('Login failed:', err);
-              });
+            const result = await login({ email, password });
+            if (!result.success && result.error) setApiError(extractErrorMessage(result.error));
+            return { status: 'success' }
           } catch (err) {
-            const msg = extractErrorMessage(err);
-            setApiError(msg);
             console.error('Login failed:', err);
+            return {
+              status: 'error',
+              error: extractErrorMessage(err),
+            };
           }
         }}
         slots={{
@@ -195,7 +177,7 @@ export default function SlotsSignIn() {
           subtitle: () => (
             <Subtitle
               message={apiError ?? undefined}
-              severity={apiError ? 'error' : 'warning'}
+              severity={apiError ? 'error' : 'info'}
             />
           ),
           emailField: CustomEmailField,

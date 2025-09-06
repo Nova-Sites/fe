@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { RootState } from '@/store';
 import { setUser, setToken, clearAuth, setError, clearError, setLoading, setAuthenticated } from '@/store/slices/authSlice';
 import { useLoginMutation, useRegisterMutation, useLogoutMutation, useGetProfileQuery } from '@/services/auth.api';
@@ -15,6 +16,8 @@ interface ApiError {
 
 export const useAuth = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { user, isAuthenticated, token, isLoading, error } = useSelector((state: RootState) => state.auth);
   
   // Ref để track nếu đã thử fetch profile
@@ -27,6 +30,10 @@ export const useAuth = () => {
   
   // Chỉ fetch profile một lần khi mount và chưa có user
   const shouldFetchProfile = !user && !hasAttemptedProfileFetch.current && !isInitialized.current;
+  
+  // Computed values
+  const isAdmin = user?.role === USER_ROLES.ADMIN || user?.role === USER_ROLES.SUPER_ADMIN;
+  const isSuperAdmin = user?.role === USER_ROLES.SUPER_ADMIN;
   
   const { 
     data: profileData, 
@@ -70,15 +77,15 @@ export const useAuth = () => {
       dispatch(clearError());
       
       const result = await loginMutation(credentials).unwrap();
-      
+
       if (result.success && result.data) {
-        // Backend đã set cookies tự động, chỉ cần update state
+        const checkAdmin = result.data.user.role === USER_ROLES.ADMIN || result.data.user.role === USER_ROLES.SUPER_ADMIN;
         dispatch(setUser(result.data.user));
-        dispatch(setToken('authenticated')); // Dummy token vì backend quản lý cookies
+        dispatch(setToken('authenticated'));
         dispatch(setAuthenticated(true));
-        
         // Reset profile fetch attempt
         hasAttemptedProfileFetch.current = false;
+        checkAdmin ? navigate('/admin') : navigate('/');
         return { success: true };
       } else {
         dispatch(setError(result.message || 'Login failed'));
@@ -120,6 +127,8 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
+    console.log("start logout...");
+    
     try {
       await logoutMutation().unwrap();
       // Backend sẽ clear cookies tự động
@@ -129,6 +138,7 @@ export const useAuth = () => {
       dispatch(clearAuth());
       // Reset profile fetch attempt
       hasAttemptedProfileFetch.current = false;
+      navigate('/login');
     }
   };
 
@@ -144,10 +154,6 @@ export const useAuth = () => {
     // Force refetch by updating the query
     window.location.reload();
   }, []);
-
-  // Computed values
-  const isAdmin = user?.role === USER_ROLES.ADMIN || user?.role === USER_ROLES.SUPER_ADMIN;
-  const isSuperAdmin = user?.role === USER_ROLES.SUPER_ADMIN;
 
   return {
     // State
