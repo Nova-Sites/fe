@@ -1,7 +1,12 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { USER_ROLES, ROUTE_GUARDS, FRONTEND_ROUTES } from '@/constants';
-import { RouteConfig, RouteAccessContext, RouteAccessResult } from '@/types';
+import {
+  RouteConfig,
+  RouteAccessContext,
+  RouteAccessResult,
+  User,
+} from '@/types';
 
 // Route configuration mapping
 const routeConfigs: Record<string, RouteConfig> = {
@@ -131,7 +136,7 @@ export const checkRouteAccess = (
 
   // Check role requirements
   if (routeConfig.requiredRoles && user) {
-    const userWithRole = user as { role?: string };
+    const userWithRole = user as User;
     const hasRequiredRole = routeConfig.requiredRoles.some(role => {
       if (role === USER_ROLES.ADMIN) {
         return (
