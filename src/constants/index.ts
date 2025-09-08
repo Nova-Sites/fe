@@ -106,4 +106,7 @@ export const DATE_FORMATS = {
 // Export routes from separate file
 export * from './routes';
 
+// Export meta from separate file
+export * from './meta';
+
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];

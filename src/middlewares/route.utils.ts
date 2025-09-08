@@ -126,7 +126,7 @@ export const checkRouteAccess = (
     return {
       hasAccess: false,
       redirectComponent: React.createElement(Navigate, {
-        to: routeConfig.redirectTo || '/login',
+        to: routeConfig.redirectTo || FRONTEND_ROUTES.PUBLIC.LOGIN,
         state: { from: currentPath },
         replace: true,
       }),
@@ -154,7 +154,7 @@ export const checkRouteAccess = (
       return {
         hasAccess: false,
         redirectComponent: React.createElement(Navigate, {
-          to: '/',
+          to: FRONTEND_ROUTES.PUBLIC.FORBIDDEN,
           replace: true,
         }),
         reason: 'Insufficient permissions',

@@ -13,7 +13,8 @@ import {
 import { ArrowBack, Refresh } from '@mui/icons-material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useAuth } from '@/hooks';
-import { Button as CommonButton } from '@/components/common';
+import { Button as CommonButton, MetaTitleBase } from '@/components/common';
+import { SEO_META } from '@/constants';
 
 interface LocationState {
   email?: string;
@@ -113,6 +114,10 @@ const OTPVerificationPage: React.FC = () => {
 
   return (
     <AppProvider theme={theme}>
+      <MetaTitleBase
+        title={SEO_META.PUBLIC.OTP_VERIFICATION.TITLE}
+        description={SEO_META.PUBLIC.OTP_VERIFICATION.DESCRIPTION}
+      />
       <Box
         sx={{
           minHeight: '100vh',

@@ -1,28 +1,13 @@
 import React from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { UserLayout } from '@/components/layouts';
-import { Button, Card } from '@/components/common';
-import { useLogoutMutation } from '@/services';
-import { useDispatch } from 'react-redux';
-import { clearAuth } from '@/store/slices/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { Button, Card, MetaTitleBase } from '@/components/common';
+import { useAuth } from '@/hooks/useAuth';
+import { SEO_META } from '@/constants';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuthContext();
-  const [logout] = useLogoutMutation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      dispatch(clearAuth());
-    } catch (error) {
-      console.error(error);
-    } finally {
-      navigate('/login');
-    }
-  };
+  const { logout } = useAuth();
 
   if (!user) {
     return (
@@ -39,6 +24,10 @@ const ProfilePage: React.FC = () => {
   return (
     <UserLayout>
       <div className='container mx-auto px-4 py-8'>
+        <MetaTitleBase
+          title={SEO_META.PROTECTED.PROFILE.TITLE}
+          description={SEO_META.PROTECTED.PROFILE.DESCRIPTION}
+        />
         <div className='max-w-2xl mx-auto'>
           <h1 className='text-3xl font-bold text-center mb-8'>Profile</h1>
 
@@ -111,7 +100,7 @@ const ProfilePage: React.FC = () => {
                 <Button variant='outline' size='sm'>
                   Edit Profile
                 </Button>
-                <Button variant='outline' size='sm' onClick={handleLogout}>
+                <Button variant='outline' size='sm' onClick={logout}>
                   Logout
                 </Button>
               </div>

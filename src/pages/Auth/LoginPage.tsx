@@ -12,9 +12,11 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import {
   Button as CommonButton,
   Input as CommonInput,
+  MetaTitleBase,
 } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
 import type { ApiErrorResponse } from '@/services/api.config';
+import { FRONTEND_ROUTES, SEO_META } from '@/constants';
 
 const providers = [{ id: 'credentials', name: 'Email and Password' }];
 
@@ -83,7 +85,10 @@ function CustomButton({ loading }: { loading?: boolean | null }) {
 
 function SignUpLink() {
   return (
-    <Link to='/register' className='text-[#0288d1] text-sm underline'>
+    <Link
+      to={FRONTEND_ROUTES.PUBLIC.REGISTER}
+      className='text-[#0288d1] text-sm underline'
+    >
       Sign up
     </Link>
   );
@@ -91,7 +96,7 @@ function SignUpLink() {
 
 function ForgotPasswordLink() {
   return (
-    <Link to='/' className='text-[#0288d1] text-sm'>
+    <Link to={FRONTEND_ROUTES.PUBLIC.HOME} className='text-[#0288d1] text-sm'>
       Forgot password?
     </Link>
   );
@@ -99,9 +104,15 @@ function ForgotPasswordLink() {
 
 function Title() {
   return (
-    <h2 style={{ marginBottom: 8 }} className='font-bold text-3xl'>
-      Login
-    </h2>
+    <>
+      <MetaTitleBase
+        title={SEO_META.PUBLIC.LOGIN.TITLE}
+        description={SEO_META.PUBLIC.LOGIN.DESCRIPTION}
+      />
+      <h2 style={{ marginBottom: 8 }} className='font-bold text-3xl'>
+        Login
+      </h2>
+    </>
   );
 }
 
@@ -165,9 +176,9 @@ export default function SlotsSignIn() {
   React.useEffect(() => {
     if (isAuthenticated) {
       if (isAdmin) {
-        navigate('/admin');
+        navigate(FRONTEND_ROUTES.ADMIN.DASHBOARD);
       } else {
-        navigate('/');
+        navigate(FRONTEND_ROUTES.PUBLIC.HOME);
       }
     }
   }, [isAuthenticated, navigate, isAdmin]);
