@@ -8,20 +8,28 @@ import { IconButton, Alert, Box } from '@mui/material';
 import {
   Button as CommonButton,
   Input as CommonInput,
+  MetaTitleBase,
 } from '@/components/common';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ApiErrorResponse } from '@/services';
 import { useAuth } from '@/hooks';
+import { FRONTEND_ROUTES, SEO_META } from '@/constants';
 
 const providers = [{ id: 'credentials', name: 'Email, Username and Password' }];
 
 function Title() {
   return (
-    <h2 style={{ marginBottom: 8 }} className='font-bold text-3xl'>
-      Create account
-    </h2>
+    <>
+      <MetaTitleBase
+        title={SEO_META.PUBLIC.REGISTER.TITLE}
+        description={SEO_META.PUBLIC.REGISTER.DESCRIPTION}
+      />
+      <h2 style={{ marginBottom: 8 }} className='font-bold text-3xl'>
+        Create account
+      </h2>
+    </>
   );
 }
 
@@ -151,7 +159,7 @@ const RegisterPage: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate(FRONTEND_ROUTES.PUBLIC.HOME);
     }
   }, [isAuthenticated, navigate]);
 
@@ -181,8 +189,8 @@ const RegisterPage: React.FC = () => {
             const result = await register({ username, email, password });
             if (result.success) {
               // Redirect to OTP verification page
-              navigate('/verify-otp', {
-                state: { email, username, from: '/login' },
+              navigate(FRONTEND_ROUTES.PUBLIC.VERIFY_OTP, {
+                state: { email, username, from: FRONTEND_ROUTES.PUBLIC.LOGIN },
               });
               return { status: 'success' };
             } else if (result.error) {
@@ -215,7 +223,10 @@ const RegisterPage: React.FC = () => {
           signUpLink: () => (
             <div className='text-sm'>
               Already have an account?{' '}
-              <Link to='/login' className='ml-2 text-[#0288d1] underline'>
+              <Link
+                to={FRONTEND_ROUTES.PUBLIC.LOGIN}
+                className='ml-2 text-[#0288d1] underline'
+              >
                 Sign in
               </Link>
             </div>

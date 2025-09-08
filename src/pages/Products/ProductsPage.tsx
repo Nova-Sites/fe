@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useGetProductsQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Card, Loading, Button } from '@/components/common';
+import { Card, Loading, Button, MetaTitleBase } from '@/components/common';
 import type { ProductFilters } from '@/types';
+import { SEO_META } from '@/constants';
 
 const ProductsPage: React.FC = () => {
   const [filters, setFilters] = useState<ProductFilters>({
@@ -44,6 +45,10 @@ const ProductsPage: React.FC = () => {
   return (
     <UserLayout>
       <div className='container mx-auto px-4 py-8'>
+        <MetaTitleBase
+          title={SEO_META.PUBLIC.PRODUCTS.TITLE}
+          description={SEO_META.PUBLIC.PRODUCTS.DESCRIPTION}
+        />
         <div className='flex justify-between items-center mb-8'>
           <h1 className='text-3xl font-bold'>Products</h1>
 

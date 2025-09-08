@@ -10,6 +10,7 @@ import { ErrorBoundary, RouteGuard } from '@/middlewares';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { publicRoutes, authRoutes, userRoutes, adminRoutes } from '@/routes';
 import { RouteObject } from 'react-router-dom';
+import { FRONTEND_ROUTES } from './constants';
 
 const App: React.FC = () => {
   return (
@@ -66,7 +67,12 @@ const App: React.FC = () => {
               ))}
 
               {/* Catch all route -> 404 */}
-              <Route path='*' element={<Navigate to='/404' replace />} />
+              <Route
+                path='*'
+                element={
+                  <Navigate to={FRONTEND_ROUTES.PUBLIC.NOT_FOUND} replace />
+                }
+              />
             </Routes>
           </Suspense>
         </AuthProvider>

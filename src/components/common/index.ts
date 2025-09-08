@@ -6,3 +6,4 @@ export { default as Alert } from './Alert';
 export { default as Dialog } from './Dialog';
 export { default as Pagination } from './Pagination';
 export { default as DataTable } from './DataTable';
+export { default as MetaTitleBase } from './MetaTitleBase';

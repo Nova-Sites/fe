@@ -1,7 +1,8 @@
 import React from 'react';
 import { useGetCategoriesQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Card, Loading } from '@/components/common';
+import { Card, Loading, MetaTitleBase } from '@/components/common';
+import { SEO_META } from '@/constants';
 
 const CategoriesPage: React.FC = () => {
   const { data: categoriesData, isLoading, error } = useGetCategoriesQuery();
@@ -25,6 +26,10 @@ const CategoriesPage: React.FC = () => {
   return (
     <UserLayout>
       <div className='container mx-auto px-4 py-8'>
+        <MetaTitleBase
+          title={SEO_META.PUBLIC.CATEGORIES.TITLE}
+          description={SEO_META.PUBLIC.CATEGORIES.DESCRIPTION}
+        />
         <h1 className='text-3xl font-bold mb-8'>Categories</h1>
 
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>

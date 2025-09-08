@@ -1,7 +1,8 @@
 import React from 'react';
 import { useGetPopularProductsQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Card, Loading } from '@/components/common';
+import { Card, Loading, MetaTitleBase } from '@/components/common';
+import { SEO_META } from '@/constants';
 
 const HomePage: React.FC = () => {
   const { data: productsData, isLoading, error } = useGetPopularProductsQuery();
@@ -25,6 +26,10 @@ const HomePage: React.FC = () => {
   return (
     <UserLayout>
       <div className='container mx-auto px-4 py-8'>
+        <MetaTitleBase
+          title={SEO_META.PUBLIC.HOME.TITLE}
+          description={SEO_META.PUBLIC.HOME.DESCRIPTION}
+        />
         <h1 className='text-4xl font-bold text-center mb-8'>
           Welcome to Our Store
         </h1>

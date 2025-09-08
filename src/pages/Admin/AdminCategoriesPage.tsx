@@ -1,6 +1,6 @@
 import React from 'react';
-import { DataTable } from '@/components/common';
-import { ROWS_PER_PAGE_OPTIONS } from '@/constants';
+import { DataTable, MetaTitleBase } from '@/components/common';
+import { ROWS_PER_PAGE_OPTIONS, SEO_META } from '@/constants';
 
 type Category = { id: number; name: string; description: string };
 
@@ -67,6 +67,10 @@ const AdminCategoriesPage: React.FC = () => {
 
   return (
     <div className='p-6'>
+      <MetaTitleBase
+        title={SEO_META.ADMIN.CATEGORIES.TITLE}
+        description={SEO_META.ADMIN.CATEGORIES.DESCRIPTION}
+      />
       <h1 className='text-2xl font-bold mb-4'>Categories</h1>
       <p className='text-gray-600'>Manage categories here.</p>
       <DataTable<Category>

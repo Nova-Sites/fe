@@ -1,11 +1,12 @@
 import React from 'react';
-import { Card, Loading } from '@/components/common';
+import { Card, Loading, MetaTitleBase } from '@/components/common';
 import {
   useGetProductsQuery,
   useGetCategoriesQuery,
   useGetUsersQuery,
 } from '@/services';
 import { Product } from '@/types';
+import { SEO_META } from '@/constants';
 
 const AdminDashboard: React.FC = () => {
   const { data: productsData, isLoading: productsLoading } =
@@ -23,6 +24,10 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className='p-6'>
+      <MetaTitleBase
+        title={SEO_META.ADMIN.DASHBOARD.TITLE}
+        description={SEO_META.ADMIN.DASHBOARD.DESCRIPTION}
+      />
       <h1 className='text-3xl font-bold mb-8'>Admin Dashboard</h1>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>

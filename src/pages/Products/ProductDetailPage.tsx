@@ -2,7 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetProductBySlugQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Loading, Button } from '@/components/common';
+import { Loading, Button, MetaTitleBase } from '@/components/common';
+import { SEO_META } from '@/constants';
 
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -31,6 +32,10 @@ const ProductDetailPage: React.FC = () => {
   return (
     <UserLayout>
       <div className='container mx-auto px-4 py-8'>
+        <MetaTitleBase
+          title={SEO_META.PUBLIC.PRODUCT_DETAIL.TITLE}
+          description={SEO_META.PUBLIC.PRODUCT_DETAIL.DESCRIPTION}
+        />
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
           <div>
             <img
