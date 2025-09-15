@@ -63,7 +63,7 @@ export interface ProductImage {
 
 // Product Types
 export interface Product {
-  id?: number;
+  id: number;
   name: string;
   description: string;
   image: string; // Main image (backward compatibility)

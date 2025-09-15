@@ -101,6 +101,9 @@ const AdminProductsPage: React.FC = () => {
 
       if (editingProduct) {
         // Update existing product
+        if (editingProduct.id === undefined) {
+          throw new Error('Product ID is missing for update');
+        }
         result = await updateProduct(editingProduct.id, data);
         if (result.success) {
           setMessage({
@@ -150,6 +153,9 @@ const AdminProductsPage: React.FC = () => {
 
     setLoading(true);
     try {
+      if (productToDelete.id === undefined) {
+        throw new Error('Product ID is missing for deletion');
+      }
       const result = await deleteProduct(productToDelete.id);
       if (result.success) {
         setMessage({ type: 'success', text: 'Product deleted successfully!' });
