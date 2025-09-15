@@ -18,36 +18,36 @@ export const categoryApi = createApi({
     }),
     getCategoryBySlug: builder.query<ApiResponse<Category>, string>({
       query: slug => ({
-        url: `${API_ROUTES.CATEGORIES.GET_BY_SLUG}/${slug}`,
+        url: API_ROUTES.CATEGORIES.GET_BY_SLUG(slug),
         method: API_METHODS.GET,
         contentType: 'json',
       }),
       providesTags: (_result, _error, slug) => [{ type: 'Category', id: slug }],
     }),
-    createCategory: builder.mutation<ApiResponse<Category>, Partial<Category>>({
+    createCategory: builder.mutation<ApiResponse<Category>, FormData>({
       query: data => ({
         url: API_ROUTES.CATEGORIES.CREATE,
         method: API_METHODS.POST,
         body: data,
-        contentType: 'json',
+        contentType: 'form-data',
       }),
       invalidatesTags: ['Category'],
     }),
     updateCategory: builder.mutation<
       ApiResponse<Category>,
-      { id: number; data: Partial<Category> }
+      { id: number; data: FormData }
     >({
       query: ({ id, data }) => ({
-        url: `${API_ROUTES.CATEGORIES.UPDATE}/${id}`,
+        url: API_ROUTES.CATEGORIES.UPDATE(id),
         method: API_METHODS.PUT,
         body: data,
-        contentType: 'json',
+        contentType: 'form-data',
       }),
       invalidatesTags: ['Category'],
     }),
     deleteCategory: builder.mutation<ApiResponse<null>, number>({
       query: id => ({
-        url: `${API_ROUTES.CATEGORIES.DELETE}/${id}`,
+        url: API_ROUTES.CATEGORIES.DELETE(id),
         method: API_METHODS.DELETE,
         contentType: 'json',
       }),

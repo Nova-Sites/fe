@@ -29,13 +29,13 @@ export const API_ROUTES = {
   CATEGORIES: {
     BASE: '/categories',
     GET_ALL: '/categories',
-    GET_BY_ID: '/categories/:id',
-    GET_BY_SLUG: '/categories/slug/:slug',
+    GET_BY_ID: (id: number) => `/categories/${id}`,
+    GET_BY_SLUG: (slug: string) => `/categories/slug/${slug}`,
     SEARCH: '/categories/search',
     WITH_PRODUCT_COUNT: '/categories/with-product-count',
     CREATE: '/categories',
-    UPDATE: '/categories/:id',
-    DELETE: '/categories/:id',
+    UPDATE: (id: number) => `/categories/${id}`,
+    DELETE: (id: number) => `/categories/${id}`,
     SOFT_DELETE: '/categories/:id/soft-delete',
   },
 
@@ -48,11 +48,25 @@ export const API_ROUTES = {
     POPULAR: '/products/popular',
     SEARCH: '/products/search',
     BY_CATEGORY: '/products/category/:categoryId',
+    BY_TECH_STACK: '/products/tech-stack/:techStackId',
     BY_PRICE_RANGE: '/products/price-range/:minPrice/:maxPrice',
     CREATE: '/products',
     UPDATE: '/products/:id',
     DELETE: '/products/:id',
     SOFT_DELETE: '/products/:id/soft-delete',
+  },
+
+  // Tech Stack Routes
+  TECH_STACKS: {
+    BASE: '/tech-stacks',
+    GET_ALL: '/tech-stacks',
+    GET_BY_ID: '/tech-stacks/:id',
+    GET_BY_SLUG: '/tech-stacks/slug/:slug',
+    SEARCH: '/tech-stacks/search',
+    WITH_PRODUCT_COUNT: '/tech-stacks/with-product-count',
+    CREATE: '/tech-stacks',
+    UPDATE: '/tech-stacks/:id',
+    DELETE: '/tech-stacks/:id',
   },
 
   // Upload Routes

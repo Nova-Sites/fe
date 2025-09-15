@@ -1,13 +1,13 @@
 import React from 'react';
 import { useGetPopularProductsQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Card, Loading, MetaTitleBase } from '@/components/common';
+import { CardBase, LoadingBase, MetaTitleBase } from '@/components/common';
 import { SEO_META } from '@/constants';
 
 const HomePage: React.FC = () => {
   const { data: productsData, isLoading, error } = useGetPopularProductsQuery();
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingBase />;
 
   if (error) {
     return (
@@ -38,7 +38,7 @@ const HomePage: React.FC = () => {
           <h2 className='text-2xl font-semibold mb-6'>Popular Products</h2>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
             {products.map(product => (
-              <Card
+              <CardBase
                 key={product.id}
                 className='hover:shadow-lg transition-shadow'
               >
@@ -49,7 +49,7 @@ const HomePage: React.FC = () => {
                     ${product.price}
                   </p>
                 </div>
-              </Card>
+              </CardBase>
             ))}
           </div>
         </section>

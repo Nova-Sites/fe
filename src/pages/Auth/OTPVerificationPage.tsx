@@ -13,7 +13,7 @@ import {
 import { ArrowBack, Refresh } from '@mui/icons-material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useAuth } from '@/hooks';
-import { Button as CommonButton, MetaTitleBase } from '@/components/common';
+import { ButtonBase as CommonButton, MetaTitleBase } from '@/components/common';
 import { SEO_META } from '@/constants';
 
 interface LocationState {

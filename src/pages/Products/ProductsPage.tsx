@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { useGetProductsQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Card, Loading, Button, MetaTitleBase } from '@/components/common';
+import {
+  CardBase,
+  LoadingBase,
+  ButtonBase,
+  MetaTitleBase,
+} from '@/components/common';
 import type { ProductFilters } from '@/types';
 import { SEO_META } from '@/constants';
 
@@ -17,7 +22,7 @@ const ProductsPage: React.FC = () => {
 
   const { data: productsData, isLoading, error } = useGetProductsQuery(filters);
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingBase />;
 
   if (error) {
     return (
@@ -64,7 +69,7 @@ const ProductsPage: React.FC = () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8'>
           {products.map(product => (
-            <Card
+            <CardBase
               key={product.id}
               className='hover:shadow-lg transition-shadow'
             >
@@ -74,7 +79,7 @@ const ProductsPage: React.FC = () => {
                 <p className='text-xl font-bold text-blue-600'>
                   ${product.price}
                 </p>
-                <Button
+                <ButtonBase
                   variant='outline'
                   size='sm'
                   className='mt-2'
@@ -83,23 +88,23 @@ const ProductsPage: React.FC = () => {
                   }
                 >
                   View Details
-                </Button>
+                </ButtonBase>
               </div>
-            </Card>
+            </CardBase>
           ))}
         </div>
 
         {totalPages > 1 && (
           <div className='flex justify-center gap-2'>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-              <Button
+              <ButtonBase
                 key={page}
                 variant={page === filters.page ? 'primary' : 'outline'}
                 size='sm'
                 onClick={() => handlePageChange(page)}
               >
                 {page}
-              </Button>
+              </ButtonBase>
             ))}
           </div>
         )}

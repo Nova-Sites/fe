@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputBaseProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helperText?: string;
@@ -20,7 +20,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   rows?: number;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+const InputBase = forwardRef<HTMLInputElement, InputBaseProps>(
   (
     {
       label,
@@ -76,6 +76,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+InputBase.displayName = 'InputBase';
 
-export default Input;
+export default InputBase;

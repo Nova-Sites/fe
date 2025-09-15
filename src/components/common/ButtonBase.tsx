@@ -57,7 +57,7 @@ const mapSizeToMui = (size: ButtonSize): 'small' | 'medium' | 'large' => {
   }
 };
 
-const Button: React.FC<ButtonProps> = ({
+const ButtonBase: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
   size = 'md',
@@ -90,4 +90,4 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default ButtonBase;

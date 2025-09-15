@@ -4,6 +4,7 @@ import type {
   Product,
   ProductFilters,
   PaginatedResponse,
+  TechStack,
 } from '@/types';
 import { API_ROUTES, API_METHODS } from '@/constants';
 import { createBaseQuery } from './api.config';
@@ -11,7 +12,7 @@ import { createBaseQuery } from './api.config';
 export const productApi = createApi({
   reducerPath: 'productApi',
   baseQuery: createBaseQuery(),
-  tagTypes: ['Product'],
+  tagTypes: ['Product', 'TechStack'],
   endpoints: builder => ({
     getProducts: builder.query<PaginatedResponse<Product>, ProductFilters>({
       query: filters => ({
@@ -38,24 +39,24 @@ export const productApi = createApi({
       }),
       providesTags: ['Product'],
     }),
-    createProduct: builder.mutation<ApiResponse<Product>, Partial<Product>>({
-      query: data => ({
+    createProduct: builder.mutation<ApiResponse<Product>, FormData>({
+      query: formData => ({
         url: API_ROUTES.PRODUCTS.CREATE,
         method: API_METHODS.POST,
-        body: data,
-        contentType: 'json',
+        body: formData,
+        contentType: 'form-data',
       }),
       invalidatesTags: ['Product'],
     }),
     updateProduct: builder.mutation<
       ApiResponse<Product>,
-      { id: number; data: Partial<Product> }
+      { id: number; formData: FormData }
     >({
-      query: ({ id, data }) => ({
+      query: ({ id, formData }) => ({
         url: `${API_ROUTES.PRODUCTS.UPDATE}/${id}`,
         method: API_METHODS.PUT,
-        body: data,
-        contentType: 'json',
+        body: formData,
+        contentType: 'form-data',
       }),
       invalidatesTags: ['Product'],
     }),
@@ -67,6 +68,33 @@ export const productApi = createApi({
       }),
       invalidatesTags: ['Product'],
     }),
+
+    // Tech Stack endpoints
+    getTechStacks: builder.query<
+      ApiResponse<TechStack[]>,
+      { isActive?: boolean }
+    >({
+      query: (params = {}) => ({
+        url: API_ROUTES.TECH_STACKS.GET_ALL,
+        method: API_METHODS.GET,
+        params,
+        contentType: 'json',
+      }),
+      providesTags: ['TechStack'],
+    }),
+
+    getProductsByTechStack: builder.query<
+      PaginatedResponse<Product>,
+      { techStackId: number; page?: number; limit?: number }
+    >({
+      query: ({ techStackId, page, limit }) => ({
+        url: `${API_ROUTES.PRODUCTS.BY_TECH_STACK}/${techStackId}`,
+        method: API_METHODS.GET,
+        params: { page, limit },
+        contentType: 'json',
+      }),
+      providesTags: ['Product'],
+    }),
   }),
 });
 
@@ -77,4 +105,6 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetTechStacksQuery,
+  useGetProductsByTechStackQuery,
 } = productApi;

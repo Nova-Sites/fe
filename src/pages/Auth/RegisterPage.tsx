@@ -6,8 +6,8 @@ import { SignInPage } from '@toolpad/core/SignInPage';
 import { useTheme } from '@mui/material/styles';
 import { IconButton, Alert, Box } from '@mui/material';
 import {
-  Button as CommonButton,
-  Input as CommonInput,
+  ButtonBase as CommonButton,
+  InputBase as CommonInput,
   MetaTitleBase,
 } from '@/components/common';
 import AccountCircle from '@mui/icons-material/AccountCircle';

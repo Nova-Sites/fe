@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { UserLayout } from '@/components/layouts';
-import { Button, Card, MetaTitleBase } from '@/components/common';
+import { ButtonBase, CardBase, MetaTitleBase } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
 import { SEO_META } from '@/constants';
 
@@ -31,7 +31,7 @@ const ProfilePage: React.FC = () => {
         <div className='max-w-2xl mx-auto'>
           <h1 className='text-3xl font-bold text-center mb-8'>Profile</h1>
 
-          <Card className='p-6'>
+          <CardBase className='p-6'>
             <div className='space-y-4'>
               <div className='flex items-center space-x-4'>
                 {(user as { image?: string })?.image && (
@@ -97,15 +97,15 @@ const ProfilePage: React.FC = () => {
               </div>
 
               <div className='flex justify-end space-x-4 pt-4 border-t'>
-                <Button variant='outline' size='sm'>
+                <ButtonBase variant='outline' size='sm'>
                   Edit Profile
-                </Button>
-                <Button variant='outline' size='sm' onClick={logout}>
+                </ButtonBase>
+                <ButtonBase variant='outline' size='sm' onClick={logout}>
                   Logout
-                </Button>
+                </ButtonBase>
               </div>
             </div>
-          </Card>
+          </CardBase>
         </div>
       </div>
     </UserLayout>

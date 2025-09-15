@@ -20,7 +20,7 @@ interface PaginationProps {
   onRowsPerPageChange?: (rowsPerPage: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({
+const PaginationBase: React.FC<PaginationProps> = ({
   page,
   count,
   onChange,
@@ -75,4 +75,4 @@ const Pagination: React.FC<PaginationProps> = ({
   );
 };
 
-export default Pagination;
+export default PaginationBase;

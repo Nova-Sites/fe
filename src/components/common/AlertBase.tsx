@@ -21,7 +21,7 @@ interface AlertProps {
   variant?: 'standard' | 'filled' | 'outlined';
 }
 
-const Alert: React.FC<AlertProps> = ({
+const AlertBase: React.FC<AlertProps> = ({
   severity = 'info',
   children,
   useSnackbar = false,
@@ -72,4 +72,4 @@ const Alert: React.FC<AlertProps> = ({
   );
 };
 
-export default Alert;
+export default AlertBase;

@@ -15,7 +15,7 @@ interface DialogProps {
   fullScreen?: boolean;
 }
 
-const Dialog: React.FC<DialogProps> = ({
+const DialogBase: React.FC<DialogProps> = ({
   open,
   onClose,
   title,
@@ -40,4 +40,4 @@ const Dialog: React.FC<DialogProps> = ({
   );
 };
 
-export default Dialog;
+export default DialogBase;
