@@ -1,13 +1,13 @@
 import React from 'react';
 import { useGetCategoriesQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Card, Loading, MetaTitleBase } from '@/components/common';
+import { CardBase, LoadingBase, MetaTitleBase } from '@/components/common';
 import { SEO_META } from '@/constants';
 
 const CategoriesPage: React.FC = () => {
   const { data: categoriesData, isLoading, error } = useGetCategoriesQuery();
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingBase />;
 
   if (error) {
     return (
@@ -41,7 +41,7 @@ const CategoriesPage: React.FC = () => {
                 (window.location.href = `/categories/${category.slug}`)
               }
             >
-              <Card className='hover:shadow-lg transition-shadow'>
+              <CardBase className='hover:shadow-lg transition-shadow'>
                 <div className='p-4'>
                   <h3 className='text-lg font-semibold mb-2'>
                     {category.name}
@@ -53,7 +53,7 @@ const CategoriesPage: React.FC = () => {
                     Created: {new Date(category.createdAt).toLocaleDateString()}
                   </div>
                 </div>
-              </Card>
+              </CardBase>
             </div>
           ))}
         </div>

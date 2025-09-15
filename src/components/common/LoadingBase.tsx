@@ -21,7 +21,7 @@ const textSizeSx = {
   lg: { fontSize: 16 },
 } as const;
 
-const Loading: React.FC<LoadingProps> = ({
+const LoadingBase: React.FC<LoadingProps> = ({
   size = 'md',
   text = 'Loading...',
   className = '',
@@ -46,4 +46,4 @@ const Loading: React.FC<LoadingProps> = ({
   );
 };
 
-export default Loading;
+export default LoadingBase;

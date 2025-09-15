@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { Loading } from '@/components/common';
+import { LoadingBase } from '@/components/common';
 import { checkRouteAccess, getRouteConfig } from './route.utils';
 
 interface RouteGuardProps {
@@ -25,7 +25,7 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
 
   // If route requires auth or role checks, block redirect while auth is initializing
   if (routeConfig.requireAuth && isLoading) {
-    return <>{fallback || <Loading />}</>;
+    return <>{fallback || <LoadingBase />}</>;
   }
 
   // Check route access

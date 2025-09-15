@@ -14,7 +14,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import { visuallyHidden } from '@mui/utils';
-import Pagination from './Pagination';
+import Pagination from './PaginationBase';
 import { ROWS_PER_PAGE_OPTIONS } from '@/constants';
 
 export type SortOrder = 'asc' | 'desc';
@@ -54,7 +54,7 @@ export interface DataTableProps<T extends { id: string | number }> {
   onSearchChange?: (value: string) => void;
 }
 
-function DataTable<T extends { id: string | number }>(
+function DataTableBase<T extends { id: string | number }>(
   props: DataTableProps<T>
 ) {
   const {
@@ -235,4 +235,4 @@ function DataTable<T extends { id: string | number }>(
   );
 }
 
-export default DataTable;
+export default DataTableBase;

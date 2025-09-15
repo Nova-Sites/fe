@@ -41,7 +41,7 @@ const paddingMap = {
   lg: 4,
 } as const;
 
-const Card: React.FC<CardProps> = ({
+const CardBase: React.FC<CardProps> = ({
   children,
   className = '',
   padding = 'md',
@@ -54,4 +54,4 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export default Card;
+export default CardBase;

@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetProductBySlugQuery } from '@/services';
 import { UserLayout } from '@/components/layouts';
-import { Loading, Button, MetaTitleBase } from '@/components/common';
+import { LoadingBase, ButtonBase, MetaTitleBase } from '@/components/common';
 import { SEO_META } from '@/constants';
 
 const ProductDetailPage: React.FC = () => {
@@ -13,7 +13,7 @@ const ProductDetailPage: React.FC = () => {
     error,
   } = useGetProductBySlugQuery(slug || '');
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingBase />;
 
   if (error || !productData?.success) {
     return (
@@ -67,12 +67,12 @@ const ProductDetailPage: React.FC = () => {
             </div>
 
             <div className='mt-6'>
-              <Button variant='primary' size='lg' className='mr-4'>
+              <ButtonBase variant='primary' size='lg' className='mr-4'>
                 Add to Cart
-              </Button>
-              <Button variant='outline' size='lg'>
+              </ButtonBase>
+              <ButtonBase variant='outline' size='lg'>
                 Buy Now
-              </Button>
+              </ButtonBase>
             </div>
           </div>
         </div>

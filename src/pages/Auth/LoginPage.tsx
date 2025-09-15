@@ -10,8 +10,8 @@ import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
 import {
-  Button as CommonButton,
-  Input as CommonInput,
+  ButtonBase as CommonButton,
+  InputBase as CommonInput,
   MetaTitleBase,
 } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';

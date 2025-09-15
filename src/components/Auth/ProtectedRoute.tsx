@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { Loading } from '@/components/common';
+import { LoadingBase } from '@/components/common';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -16,7 +16,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Show loading while checking authentication
   if (isLoading) {
-    return <Loading />;
+    return <LoadingBase />;
   }
 
   // Redirect to login if not authenticated

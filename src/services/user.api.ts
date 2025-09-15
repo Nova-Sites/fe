@@ -18,13 +18,13 @@ export const userApi = createApi({
     }),
     updateUser: builder.mutation<
       ApiResponse<User>,
-      { id: number; data: Partial<User> }
+      { id: number; data: Partial<User> | FormData }
     >({
       query: ({ id, data }) => ({
         url: `${API_ROUTES.USERS.UPDATE_PROFILE}/${id}`,
         method: API_METHODS.PUT,
         body: data,
-        contentType: 'json',
+        contentType: data instanceof FormData ? 'form-data' : 'json',
       }),
       invalidatesTags: ['User'],
     }),

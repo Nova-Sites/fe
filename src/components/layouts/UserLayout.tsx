@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { Button } from '@/components/common';
+import { ButtonBase } from '@/components/common';
 import { USER_ROLES } from '@/constants';
 import { useAuth } from '@/hooks';
 
@@ -60,21 +60,21 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
                       Admin
                     </Link>
                   ) : null}
-                  <Button variant='outline' size='sm' onClick={logout}>
+                  <ButtonBase variant='outline' size='sm' onClick={logout}>
                     Logout
-                  </Button>
+                  </ButtonBase>
                 </>
               ) : (
                 <>
                   <Link to='/login'>
-                    <Button variant='outline' size='sm'>
+                    <ButtonBase variant='outline' size='sm'>
                       Login
-                    </Button>
+                    </ButtonBase>
                   </Link>
                   <Link to='/register'>
-                    <Button variant='primary' size='sm'>
+                    <ButtonBase variant='primary' size='sm'>
                       Register
-                    </Button>
+                    </ButtonBase>
                   </Link>
                 </>
               )}

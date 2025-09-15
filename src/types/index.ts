@@ -39,18 +39,42 @@ export interface Category {
   updatedAt: string;
 }
 
-// Product Types
-export interface Product {
+// Tech Stack Types
+export interface TechStack {
   id: number;
   name: string;
+  slug: string;
+  description?: string;
+  iconUrl?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Product Image Types
+export interface ProductImage {
+  id: number;
+  productId: number;
+  url: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Product Types
+export interface Product {
+  id?: number;
+  name: string;
   description: string;
-  image: string;
+  image: string; // Main image (backward compatibility)
   price: number;
   views: number;
   slug: string;
   categoryId: number;
   isActive: boolean;
   category?: Category;
+  images?: ProductImage[]; // Additional images
+  techStacks?: TechStack[]; // Associated tech stacks
   createdAt: string;
   updatedAt: string;
 }
@@ -100,6 +124,7 @@ export interface PaginatedResponse<T> {
 // Filter Types
 export interface ProductFilters {
   categoryId?: number;
+  techStackIds?: number[];
   minPrice?: number;
   maxPrice?: number;
   search?: string;
