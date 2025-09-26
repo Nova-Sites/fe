@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 import { FRONTEND_ROUTES } from '@/constants';
 import { AdminLayout } from '@/components/layouts';
+import AdminTechStacksPage from '@/pages/Admin/AdminTechStackPage';
 
 const AdminDashboard = lazy(() => import('@/pages/Admin/AdminDashboard'));
 const AdminProductsPage = lazy(() => import('@/pages/Admin/AdminProductsPage'));
@@ -19,6 +20,10 @@ export const adminRoutes: RouteObject[] = [
       { path: 'products', element: React.createElement(AdminProductsPage) },
       { path: 'categories', element: React.createElement(AdminCategoriesPage) },
       { path: 'orders', element: React.createElement(AdminOrdersPage) },
+      {
+        path: 'masters/tech-stacks',
+        element: React.createElement(AdminTechStacksPage),
+      },
     ],
   },
 ];

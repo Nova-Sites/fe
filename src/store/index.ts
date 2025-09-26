@@ -4,6 +4,7 @@ import { categoryApi } from '@/services/category.api';
 import { productApi } from '@/services/product.api';
 import { userApi } from '@/services/user.api';
 import { uploadApi } from '@/services/upload.api';
+import { techStackApi } from '@/services/tech-stack.api';
 import authReducer from './slices/authSlice';
 import uiReducer from './slices/uiSlice';
 
@@ -15,6 +16,7 @@ export const store = configureStore({
     [productApi.reducerPath]: productApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [uploadApi.reducerPath]: uploadApi.reducer,
+    [techStackApi.reducerPath]: techStackApi.reducer,
 
     // Regular reducers
     auth: authReducer,
@@ -30,7 +32,8 @@ export const store = configureStore({
       categoryApi.middleware,
       productApi.middleware,
       userApi.middleware,
-      uploadApi.middleware
+      uploadApi.middleware,
+      techStackApi.middleware
     ),
   devTools: import.meta.env.DEV,
 });

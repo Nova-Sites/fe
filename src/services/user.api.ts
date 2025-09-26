@@ -20,8 +20,8 @@ export const userApi = createApi({
       ApiResponse<User>,
       { id: number; data: Partial<User> | FormData }
     >({
-      query: ({ id, data }) => ({
-        url: `${API_ROUTES.USERS.UPDATE_PROFILE}/${id}`,
+      query: ({ data }) => ({
+        url: API_ROUTES.USERS.UPDATE_PROFILE,
         method: API_METHODS.PUT,
         body: data,
         contentType: data instanceof FormData ? 'form-data' : 'json',
@@ -30,7 +30,7 @@ export const userApi = createApi({
     }),
     deleteUser: builder.mutation<ApiResponse<null>, number>({
       query: id => ({
-        url: `${API_ROUTES.USERS.DELETE}/${id}`,
+        url: API_ROUTES.USERS.DELETE(id),
         method: API_METHODS.DELETE,
         contentType: 'json',
       }),

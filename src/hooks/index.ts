@@ -7,3 +7,11 @@ export {
   useTechStacks,
 } from './useProducts';
 export { useUsers } from './useUsers';
+export {
+  useTechStacksList,
+  useTechStackById,
+  useTechStackBySlug,
+  useSearchTechStacks,
+  useTechStacksWithProductCount,
+  useManageTechStacks,
+} from './useTechStacks';

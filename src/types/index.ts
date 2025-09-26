@@ -66,6 +66,7 @@ export interface Product {
   id: number;
   name: string;
   description: string;
+  videoUrl: string;
   image: string; // Main image (backward compatibility)
   price: number;
   views: number;
@@ -111,7 +112,7 @@ export interface PaginatedResponse<T> {
   success: boolean;
   message: string;
   data: {
-    products: T[];
+    items: T[];
     pagination: {
       page: number;
       limit: number;
@@ -130,6 +131,25 @@ export interface ProductFilters {
   search?: string;
   page?: number;
   limit?: number;
+}
+
+export interface TechStackFilters {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
+  search?: string;
+  isActive?: boolean;
+}
+
+export interface TechStackListData {
+  techStacks: TechStack[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 // UI Types

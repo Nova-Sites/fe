@@ -50,6 +50,7 @@ const DialogForm: React.FC<DialogFormProps> = ({
   const defaultValues = {
     name: '',
     description: '',
+    videoUrl: '',
     slug: '',
     price: 0,
     categoryId: 0,
@@ -87,6 +88,7 @@ const DialogForm: React.FC<DialogFormProps> = ({
         name: product.name || '',
         slug: product.slug || '',
         description: product.description || '',
+        videoUrl: product.videoUrl || '',
         price: product.price || 0,
         categoryId: product.categoryId || 0,
         image: product.image || ('' as string),
@@ -100,6 +102,7 @@ const DialogForm: React.FC<DialogFormProps> = ({
         name: '',
         slug: '',
         description: '',
+        videoUrl: '',
         price: 0,
         categoryId: 0,
         image: '' as File | string,
@@ -206,6 +209,16 @@ const DialogForm: React.FC<DialogFormProps> = ({
             disabled={loading}
           />
         </Box>
+
+        <RHFInput
+          name='videoUrl'
+          control={control}
+          label='Video URL'
+          placeholder='e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+          helperText='Enter the video URL'
+          required
+          disabled={loading}
+        />
 
         <RHFTextArea
           name='description'

@@ -25,7 +25,7 @@ export const productApi = createApi({
     }),
     getProductBySlug: builder.query<ApiResponse<Product>, string>({
       query: slug => ({
-        url: `${API_ROUTES.PRODUCTS.GET_BY_SLUG}/${slug}`,
+        url: API_ROUTES.PRODUCTS.GET_BY_SLUG(slug),
         method: API_METHODS.GET,
         contentType: 'json',
       }),
@@ -53,7 +53,7 @@ export const productApi = createApi({
       { id: number; formData: FormData }
     >({
       query: ({ id, formData }) => ({
-        url: `${API_ROUTES.PRODUCTS.UPDATE}/${id}`,
+        url: API_ROUTES.PRODUCTS.UPDATE(id),
         method: API_METHODS.PUT,
         body: formData,
         contentType: 'form-data',
@@ -62,7 +62,7 @@ export const productApi = createApi({
     }),
     deleteProduct: builder.mutation<ApiResponse<null>, number>({
       query: id => ({
-        url: `${API_ROUTES.PRODUCTS.DELETE}/${id}`,
+        url: API_ROUTES.PRODUCTS.DELETE(id),
         method: API_METHODS.DELETE,
         contentType: 'json',
       }),
@@ -71,13 +71,26 @@ export const productApi = createApi({
 
     // Tech Stack endpoints
     getTechStacks: builder.query<
-      ApiResponse<TechStack[]>,
-      { isActive?: boolean }
+      PaginatedResponse<TechStack>,
+      {
+        isActive?: boolean;
+        page?: number;
+        limit?: number;
+        sortBy?: string;
+        sortOrder?: 'ASC' | 'DESC';
+        search?: string;
+      }
     >({
-      query: (params = {}) => ({
+      query: params => ({
         url: API_ROUTES.TECH_STACKS.GET_ALL,
         method: API_METHODS.GET,
-        params,
+        params: {
+          page: 1,
+          limit: 100,
+          sortBy: 'createdAt',
+          sortOrder: 'DESC',
+          ...(params || {}),
+        },
         contentType: 'json',
       }),
       providesTags: ['TechStack'],
@@ -88,7 +101,7 @@ export const productApi = createApi({
       { techStackId: number; page?: number; limit?: number }
     >({
       query: ({ techStackId, page, limit }) => ({
-        url: `${API_ROUTES.PRODUCTS.BY_TECH_STACK}/${techStackId}`,
+        url: API_ROUTES.PRODUCTS.BY_TECH_STACK(techStackId),
         method: API_METHODS.GET,
         params: { page, limit },
         contentType: 'json',

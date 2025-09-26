@@ -20,9 +20,9 @@ export const API_ROUTES = {
     UPDATE_AVATAR: '/users/profile/avatar',
     CHANGE_PASSWORD: '/users/change-password',
     GET_ALL: '/users',
-    GET_BY_ID: '/users/:id',
-    DELETE: '/users/:id',
-    SOFT_DELETE: '/users/:id/soft-delete',
+    GET_BY_ID: (id: number) => `/users/${id}`,
+    DELETE: (id: number) => `/users/${id}`,
+    SOFT_DELETE: (id: number) => `/users/${id}/soft-delete`,
   },
 
   // Category Routes
@@ -36,37 +36,39 @@ export const API_ROUTES = {
     CREATE: '/categories',
     UPDATE: (id: number) => `/categories/${id}`,
     DELETE: (id: number) => `/categories/${id}`,
-    SOFT_DELETE: '/categories/:id/soft-delete',
+    SOFT_DELETE: (id: number) => `/categories/${id}/soft-delete`,
   },
 
   // Product Routes
   PRODUCTS: {
     BASE: '/products',
     GET_ALL: '/products',
-    GET_BY_ID: '/products/:id',
-    GET_BY_SLUG: '/products/slug/:slug',
+    GET_BY_ID: (id: number) => `/products/${id}`,
+    GET_BY_SLUG: (slug: string) => `/products/slug/${slug}`,
     POPULAR: '/products/popular',
     SEARCH: '/products/search',
-    BY_CATEGORY: '/products/category/:categoryId',
-    BY_TECH_STACK: '/products/tech-stack/:techStackId',
-    BY_PRICE_RANGE: '/products/price-range/:minPrice/:maxPrice',
+    BY_CATEGORY: (categoryId: number) => `/products/category/${categoryId}`,
+    BY_TECH_STACK: (techStackId: number) =>
+      `/products/tech-stack/${techStackId}`,
+    BY_PRICE_RANGE: (minPrice: number, maxPrice: number) =>
+      `/products/price-range/${minPrice}/${maxPrice}`,
     CREATE: '/products',
-    UPDATE: '/products/:id',
-    DELETE: '/products/:id',
-    SOFT_DELETE: '/products/:id/soft-delete',
+    UPDATE: (id: number) => `/products/${id}`,
+    DELETE: (id: number) => `/products/${id}`,
+    SOFT_DELETE: (id: number) => `/products/${id}/soft-delete`,
   },
 
   // Tech Stack Routes
   TECH_STACKS: {
     BASE: '/tech-stacks',
     GET_ALL: '/tech-stacks',
-    GET_BY_ID: '/tech-stacks/:id',
-    GET_BY_SLUG: '/tech-stacks/slug/:slug',
+    GET_BY_ID: (id: number) => `/tech-stacks/${id}`,
+    GET_BY_SLUG: (slug: string) => `/tech-stacks/slug/${slug}`,
     SEARCH: '/tech-stacks/search',
     WITH_PRODUCT_COUNT: '/tech-stacks/with-product-count',
     CREATE: '/tech-stacks',
-    UPDATE: '/tech-stacks/:id',
-    DELETE: '/tech-stacks/:id',
+    UPDATE: (id: number) => `/tech-stacks/${id}`,
+    DELETE: (id: number) => `/tech-stacks/${id}`,
   },
 
   // Upload Routes
