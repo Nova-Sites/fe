@@ -18,7 +18,7 @@ const AdminDashboard: React.FC = () => {
 
   if (isLoading) return <LoadingBase />;
 
-  const products = productsData?.data?.products || [];
+  const products = productsData?.data?.items || [];
   const categories = categoriesData?.data || [];
   const users = usersData?.data || [];
 
