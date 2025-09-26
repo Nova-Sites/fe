@@ -77,6 +77,11 @@ export const SEO_META = {
       DESCRIPTION:
         'Track and process customer orders on Nova Sites. Ensure fast and transparent transactions.',
     },
+    TECH_STACKS: {
+      TITLE: 'Nova Sites - Manage Tech Stacks',
+      DESCRIPTION:
+        'Manage tech stacks for products on Nova Sites. Ensure fast and transparent transactions.',
+    },
     ANALYTICS: {
       TITLE: 'Nova Sites - Analytics & Reports',
       DESCRIPTION:

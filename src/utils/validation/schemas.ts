@@ -92,12 +92,32 @@ export const categorySchemas = {
   }),
 };
 
+// Tech Stack schemas
+export const techStackSchemas = {
+  create: z.object({
+    name: baseSchemas.requiredString(2, 100),
+    slug: baseSchemas.slug,
+    description: baseSchemas.requiredString(10, 1000),
+    iconUrl: baseSchemas.file(5, ['image/*']),
+    isActive: z.boolean().default(true),
+  }),
+
+  update: z.object({
+    name: baseSchemas.requiredString(2, 100),
+    slug: baseSchemas.slug,
+    description: baseSchemas.requiredString(10, 1000),
+    iconUrl: baseSchemas.file(5, ['image/*']).optional(),
+    isActive: z.boolean().default(true),
+  }),
+};
+
 // Product schemas
 export const productSchemas = {
   create: z.object({
     name: baseSchemas.requiredString(2, 200),
     slug: baseSchemas.slug,
     description: baseSchemas.requiredString(10, 2000),
+    videoUrl: baseSchemas.url,
     price: z
       .number()
       .min(0, 'Price must be greater than or equal to 0')
@@ -192,6 +212,8 @@ export const searchSchemas = {
 // Export types
 export type CategoryCreateInput = z.infer<typeof categorySchemas.create>;
 export type CategoryUpdateInput = z.infer<typeof categorySchemas.update>;
+export type TechStackCreateInput = z.infer<typeof techStackSchemas.create>;
+export type TechStackUpdateInput = z.infer<typeof techStackSchemas.update>;
 export type ProductCreateInput = z.infer<typeof productSchemas.create>;
 export type ProductUpdateInput = z.infer<typeof productSchemas.update>;
 export type UserRegisterInput = z.infer<typeof userSchemas.register>;

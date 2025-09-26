@@ -4,6 +4,7 @@ export { categoryApi } from './category.api';
 export { productApi } from './product.api';
 export { userApi } from './user.api';
 export { uploadApi } from './upload.api';
+export { techStackApi } from './tech-stack.api';
 
 // Export API configuration utilities
 export {
@@ -57,3 +58,14 @@ export {
   useUploadAvatarMutation,
   useUploadProductImageMutation,
 } from './upload.api';
+
+export {
+  useGetTechStacksQuery,
+  useGetTechStackByIdQuery,
+  useGetTechStackBySlugQuery,
+  useSearchTechStacksQuery,
+  useGetTechStacksWithProductCountQuery,
+  useCreateTechStackMutation,
+  useUpdateTechStackMutation,
+  useDeleteTechStackMutation,
+} from './tech-stack.api';

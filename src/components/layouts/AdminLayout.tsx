@@ -47,13 +47,13 @@ const NAVIGATION: Navigation = [
     icon: <DescriptionIcon />,
   },
   {
-    segment: 'reports',
-    title: 'Reports',
+    segment: 'masters',
+    title: 'Masters',
     icon: <BarChartIcon />,
     children: [
       {
-        segment: 'sales',
-        title: 'Sales',
+        segment: 'tech-stacks',
+        title: 'Tech Stacks',
         icon: <DescriptionIcon />,
       },
       {

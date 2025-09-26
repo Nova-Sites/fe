@@ -37,7 +37,7 @@ export const useProducts = (filters?: ProductFilters) => {
     useDeleteProductMutation();
 
   // Computed values
-  const products = productsData?.data?.products || [];
+  const products = productsData?.data?.items || [];
   const pagination = productsData?.data?.pagination;
   const isLoading = isLoadingProducts || isCreating || isUpdating || isDeleting;
 
@@ -49,6 +49,7 @@ export const useProducts = (filters?: ProductFilters) => {
     formData.append('name', data.name);
     formData.append('slug', data.slug);
     formData.append('description', data.description);
+    formData.append('videoUrl', data.videoUrl);
     formData.append('price', data.price.toString());
     formData.append('categoryId', data.categoryId.toString());
 
@@ -222,7 +223,7 @@ export const useTechStacks = (isActive?: boolean) => {
   } = useGetTechStacksQuery({ isActive });
 
   return {
-    techStacks: techStacksData?.data || [],
+    techStacks: techStacksData?.data?.items || [],
     isLoading,
     error,
     refetch,
@@ -247,7 +248,7 @@ export const useProductsByTechStack = (
   );
 
   return {
-    products: productsData?.data?.products || [],
+    products: productsData?.data?.items || [],
     pagination: productsData?.data?.pagination,
     isLoading,
     error,
