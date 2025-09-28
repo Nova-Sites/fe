@@ -100,7 +100,11 @@ const ProductsPage: React.FC = () => {
           <TextField
             size='small'
             placeholder='Search websites...'
-            onChange={handleSearch}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                handleSearch(e);
+              }
+            }}
           />
         </Box>
 
