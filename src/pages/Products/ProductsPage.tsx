@@ -72,9 +72,11 @@ const ProductsPage: React.FC = () => {
     setFilters(prev => ({ ...prev, page }));
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const search = e.target.value;
-    setFilters(prev => ({ ...prev, search, page: 1 }));
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const search = (e.target as HTMLInputElement).value;
+      setFilters(prev => ({ ...prev, search, page: 1 }));
+    }
   };
 
   return (
@@ -100,11 +102,7 @@ const ProductsPage: React.FC = () => {
           <TextField
             size='small'
             placeholder='Search websites...'
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                handleSearch(e);
-              }
-            }}
+            onKeyDown={handleKeyDown}
           />
         </Box>
 
