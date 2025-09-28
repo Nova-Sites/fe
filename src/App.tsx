@@ -5,7 +5,6 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
-import { LoadingBase } from '@/components/common';
 import { ErrorBoundary, RouteGuard } from '@/middlewares';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { publicRoutes, authRoutes, userRoutes, adminRoutes } from '@/routes';
@@ -17,7 +16,7 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <Router>
         <AuthProvider>
-          <Suspense fallback={<LoadingBase />}>
+          <Suspense>
             <Routes>
               {/* Public Routes */}
               {publicRoutes.map((route: RouteObject) => (

@@ -143,7 +143,7 @@ export interface TechStackFilters {
 }
 
 export interface TechStackListData {
-  techStacks: TechStack[];
+  items: TechStack[];
   pagination: {
     page: number;
     limit: number;

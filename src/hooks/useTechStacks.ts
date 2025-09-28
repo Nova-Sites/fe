@@ -22,7 +22,7 @@ export const useTechStacksList = (
   const { data, isLoading, error, refetch } = useGetTechStacksQuery(filters);
 
   return {
-    techStacks: data?.data?.techStacks || [],
+    techStacks: data?.data?.items || [],
     pagination: data?.data?.pagination,
     isLoading,
     error,
