@@ -55,7 +55,7 @@ const DialogForm: React.FC<DialogFormProps> = ({
     watch,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, errors, isValid },
+    formState: { isSubmitting },
   } = form;
 
   // Reset form when category prop changes
@@ -110,13 +110,6 @@ const DialogForm: React.FC<DialogFormProps> = ({
   };
 
   const handleSubmitWithValidation = async (data: CategoryCreateInput) => {
-    console.log(
-      '🚀 DialogForm: handleSubmitWithValidation called with data:',
-      data
-    );
-    console.log('🚀 DialogForm: Current form errors:', errors);
-    console.log('🚀 DialogForm: Form isValid:', isValid);
-
     await handleFormSubmit(data);
   };
 
@@ -190,13 +183,6 @@ const DialogForm: React.FC<DialogFormProps> = ({
 
         <ActionButtonsBase
           onSave={() => {
-            console.log('🔘 DialogForm: Save button clicked');
-            console.log(
-              '🔘 DialogForm: Form state - isValid:',
-              isValid,
-              'errors:',
-              errors
-            );
             handleSubmit(handleSubmitWithValidation)();
           }}
           onCancel={handleClose}

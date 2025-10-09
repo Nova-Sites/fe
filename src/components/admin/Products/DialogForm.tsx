@@ -77,7 +77,7 @@ const DialogForm: React.FC<DialogFormProps> = ({
     watch,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, errors, isValid },
+    formState: { isSubmitting, errors },
   } = form;
 
   // Reset form when product prop changes
@@ -144,13 +144,6 @@ const DialogForm: React.FC<DialogFormProps> = ({
   };
 
   const handleSubmitWithValidation = async (data: ProductCreateInput) => {
-    console.log(
-      '🚀 ProductDialogForm: handleSubmitWithValidation called with data:',
-      data
-    );
-    console.log('🚀 ProductDialogForm: Current form errors:', errors);
-    console.log('🚀 ProductDialogForm: Form isValid:', isValid);
-
     await handleFormSubmit(data);
   };
 
@@ -342,13 +335,6 @@ const DialogForm: React.FC<DialogFormProps> = ({
 
         <ActionButtonsBase
           onSave={() => {
-            console.log('🔘 ProductDialogForm: Save button clicked');
-            console.log(
-              '🔘 ProductDialogForm: Form state - isValid:',
-              isValid,
-              'errors:',
-              errors
-            );
             handleSubmit(handleSubmitWithValidation)();
           }}
           onCancel={handleClose}
