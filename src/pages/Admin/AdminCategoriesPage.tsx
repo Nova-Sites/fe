@@ -113,8 +113,6 @@ const AdminCategoriesPage: React.FC = () => {
 
   const handleSubmitCategory = async (data: CategoryCreateInput) => {
     setLoading(true);
-    console.log('data creaate', data);
-
     try {
       let result;
 

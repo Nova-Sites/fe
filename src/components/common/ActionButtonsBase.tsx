@@ -59,7 +59,6 @@ const ActionButtonsBase: React.FC<ActionButtonsBaseProps> = ({
       <Button
         variant={saveVariant}
         onClick={e => {
-          console.log('🔘 ActionButtonsBase: Save button clicked');
           e.preventDefault();
           onSave();
         }}

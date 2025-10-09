@@ -62,17 +62,12 @@ const RHFFormBase = <T extends FieldValues>({
 
   const {
     handleSubmit,
-    formState: { isSubmitting, errors, isValid },
+    formState: { isSubmitting },
   } = form;
 
   const handleFormSubmit: SubmitHandler<T> = async data => {
-    console.log('🚀 RHFFormBase: handleFormSubmit called with data:', data);
-    console.log('🚀 RHFFormBase: Current errors:', errors);
-
     try {
-      console.log('✅ RHFFormBase: Calling onSubmit...');
       await onSubmit(data);
-      console.log('✅ RHFFormBase: onSubmit completed successfully');
     } catch (error) {
       console.error('❌ RHFFormBase: Form submission error:', error);
     }
@@ -98,15 +93,6 @@ const RHFFormBase = <T extends FieldValues>({
         {showActions && (
           <ActionButtonsBase
             onSave={() => {
-              console.log(
-                '🔘 RHFFormBase: onSave called, triggering handleSubmit'
-              );
-              console.log(
-                '🔘 RHFFormBase: Form state - isValid:',
-                isValid,
-                'errors:',
-                errors
-              );
               handleSubmit(handleFormSubmit)();
             }}
             onCancel={onCancel || (() => {})}

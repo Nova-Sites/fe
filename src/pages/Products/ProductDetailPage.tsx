@@ -108,7 +108,7 @@ const ProductDetailPage: React.FC = () => {
             src={item.src}
             alt={product.name}
             loading='lazy'
-            style={{ width: '100%', height: 360, objectFit: 'cover' }}
+            style={{ width: '100%', maxHeight: 414, objectFit: 'cover' }}
           />
         );
       }
