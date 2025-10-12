@@ -15,3 +15,4 @@ export {
   useTechStacksWithProductCount,
   useManageTechStacks,
 } from './useTechStacks';
+export { useAppSelector } from './useAppSelector';
