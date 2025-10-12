@@ -1,51 +1,61 @@
-import React, { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useAuthContext } from '@/contexts/AuthContext';
-import { LoadingBase } from '@/components/common';
-import { checkRouteAccess, getRouteConfig } from './route.utils';
+import React, { useMemo } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { FRONTEND_ROUTES } from '@/constants';
+import { GuardConfig } from '@/types/route';
 
 interface RouteGuardProps {
-  children: ReactNode;
-  routePath?: string;
-  fallback?: ReactNode;
+  children: React.ReactNode;
+  config?: GuardConfig;
 }
 
-export const RouteGuard: React.FC<RouteGuardProps> = ({
-  children,
-  routePath,
-  fallback,
-}) => {
-  const location = useLocation();
-  const { user, isAuthenticated, isLoading } = useAuthContext();
-  // Use provided routePath or current location
-  const currentPath = routePath || location.pathname;
+/**
+ * 🛡️ Universal Route Guard Component
+ * Handles authentication and authorization in one place
+ */
+const RouteGuard: React.FC<RouteGuardProps> = ({ children, config = {} }) => {
+  const { isAuthenticated, user, isLoading } = useAuth();
 
-  // Get route configuration
-  const routeConfig = getRouteConfig(currentPath);
-
-  // If route requires auth or role checks, block redirect while auth is initializing
-  if (routeConfig.requireAuth && isLoading) {
-    return <>{fallback || <LoadingBase />}</>;
-  }
-
-  // Check route access
-  const accessResult = checkRouteAccess(routeConfig, {
-    isAuthenticated,
-    user,
-    currentPath,
-  });
-
-  // If access denied, show fallback or redirect
-  if (!accessResult.hasAccess) {
-    if (fallback) {
-      return <>{fallback}</>;
+  const guardResult = useMemo(() => {
+    // Show loading while auth state is being determined
+    if (isLoading) {
+      return { shouldRender: false, redirectTo: null };
     }
 
-    // Use default redirect logic
-    return accessResult.redirectComponent || <>{children}</>;
+    // Check authentication requirement
+    if (config.requiresAuth && !isAuthenticated) {
+      return {
+        shouldRender: false,
+        redirectTo: config.redirectTo || FRONTEND_ROUTES.PUBLIC.LOGIN,
+      };
+    }
+
+    // Check role-based authorization
+    if (config.allowedRoles && config.allowedRoles.length > 0) {
+      if (!isAuthenticated) {
+        return {
+          shouldRender: false,
+          redirectTo: FRONTEND_ROUTES.PUBLIC.LOGIN,
+        };
+      }
+
+      if (!user?.role || !config.allowedRoles.includes(user.role)) {
+        return {
+          shouldRender: false,
+          redirectTo: FRONTEND_ROUTES.PUBLIC.FORBIDDEN,
+        };
+      }
+    }
+
+    return { shouldRender: true, redirectTo: null };
+  }, [isAuthenticated, user?.role, isLoading, config]);
+
+  // Redirect if needed
+  if (guardResult.redirectTo) {
+    return <Navigate to={guardResult.redirectTo} replace />;
   }
 
-  // Access granted, render children
+  // Render children if all guards pass
   return <>{children}</>;
 };
 

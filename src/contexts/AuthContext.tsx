@@ -5,13 +5,15 @@ import React, {
   useRef,
   useMemo,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { setUser, setAuthenticated, clearAuth } from '@/store/slices/authSlice';
 import { useGetProfileQuery } from '@/services/auth.api';
+import { UserProfile } from '@/types';
+import { useAppSelector } from '@/hooks';
 
 interface AuthContextType {
-  user: unknown;
+  user: UserProfile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -32,7 +34,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
-  const { user, isAuthenticated } = useSelector(
+  const { user, isAuthenticated } = useAppSelector(
     (state: RootState) => state.auth
   );
 
